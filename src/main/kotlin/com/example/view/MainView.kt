@@ -9,12 +9,13 @@ import javafx.scene.control.TabPane
 import tornadofx.*
 
 
-class MainView : View("Hello TornadoFX") {
+class MainView : View("Unity Scanner Version 0.1") {
 
 
     val controller:MainController by inject()
 
     var versionText = SimpleStringProperty()
+    var projectName = SimpleStringProperty()
 
     override val root = vbox {
         alignment = Pos.TOP_LEFT
@@ -25,8 +26,9 @@ class MainView : View("Hello TornadoFX") {
                 {
                     setOnAction {
 
-                        controller.GetDirectory()
-                       versionText.set( "Unity Version: " + controller.ExtractVersionNumber())
+                        controller.OpenProject()
+                        versionText.set( "Unity Version: " + controller.ExtractVersionNumber())
+                        projectName.set("Project Name: " + controller.GetProjectName())
                     }
                 }
                 item("Save")
@@ -41,9 +43,19 @@ class MainView : View("Hello TornadoFX") {
             }
         }
 
-        label(versionText) {
-            bind(versionText)
-            addClass(Styles.heading)
+        hbox {
+
+            label(versionText) {
+                bind(versionText)
+                addClass(Styles.heading)
+            }
+
+            label(projectName) {
+                bind(projectName)
+                addClass(Styles.heading)
+                alignment = Pos.BASELINE_RIGHT
+            }
+
         }
         tabpane {
 

@@ -15,7 +15,9 @@ application {
 
 dependencies {
     implementation "no.tornado:tornadofx:$tornadofx_version"
+    implementation 'net.pwall.yaml:yaml-simple:1.2.1'
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit"
+
 }
 
 compileKotlin {

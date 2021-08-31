@@ -8,15 +8,18 @@ class MainController: Controller() {
 
     val mainScanner = Scanner()
 
-    fun GetDirectory()
+    fun OpenProject()
     {
-       mainScanner.GetDirectory()
+       mainScanner.OpenProject()
     }
 
 
     fun ExtractVersionNumber():String
     {
         return mainScanner.ExtractVersionNumber()
+    }
+    fun GetProjectName():String{
+        return mainScanner.projectName;
     }
 
 }
