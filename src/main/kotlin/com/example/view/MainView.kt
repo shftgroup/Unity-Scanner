@@ -2,6 +2,7 @@ package com.example.view
 
 import com.example.Styles
 import com.example.controller.MainController
+import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
@@ -19,11 +20,23 @@ class MainView : View("Unity Scanner Version 0.1") {
 
     var versionText = SimpleStringProperty()
     var projectName = SimpleStringProperty()
+
+    var scenesInBuild = SimpleStringProperty();
+
+    var sceneNames = SimpleStringProperty()
+
+
+
+    val sceneCountLabel = label()
+
     //var scenesInBuild = SimpleListProperty<String>()
 
 
     override val root = vbox {
         alignment = Pos.TOP_LEFT
+
+        scenesInBuild.set("Scenes in Build: 0")
+
 
         menubar {
             menu("File") {
@@ -34,7 +47,10 @@ class MainView : View("Unity Scanner Version 0.1") {
                         controller.OpenProject()
                         versionText.set("Unity Version: " + controller.ExtractVersionNumber())
                         projectName.set("Project Name: " + controller.GetProjectName())
-                        //scenesInBuild.set(controller.GetScenesInBuild())
+                        scenesInBuild.set("Scenes in Build: " + controller.GetScenesInBuild().count())
+
+                        val scenes = controller.GetScenesInBuild()
+                        sceneNames.set(scenes[0])
                     }
                 }
                 item("Save")
@@ -85,12 +101,26 @@ class MainView : View("Unity Scanner Version 0.1") {
 
             tab("Build") {
                 disableClose()
-            /*    label(scenesInBuild) {
-                    bind(scenesInBuild)
-                    addClass(Styles.heading)
-                    alignment = Pos.BASELINE_LEFT
+
+                scrollpane(fitToHeight = true, fitToWidth = true)
+                {
+                    vbox {
+
+                            label(scenesInBuild)
+                            {
+                                bind(scenesInBuild)
+                                addClass(Styles.heading)
+                            }
+
+                            textarea(sceneNames)
+                            {
+                                bind(sceneNames)
+                                addClass(Styles.heading)
+
+                            }
+                    }
                 }
-*/
+
 
             }
             tab("Packages") {
