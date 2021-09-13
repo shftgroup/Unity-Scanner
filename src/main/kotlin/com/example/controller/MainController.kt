@@ -1,6 +1,7 @@
 package com.example.controller
 
 import com.example.model.Scanner
+import javafx.beans.property.SimpleListProperty
 import tornadofx.Controller
 import tornadofx.chooseDirectory
 
@@ -20,6 +21,10 @@ class MainController: Controller() {
     }
     fun GetProjectName():String{
         return mainScanner.projectName;
+    }
+    fun GetScenesInBuild():List<String>
+    {
+        return mainScanner.sceneExtractor.ExtractScenesInBuild()
     }
 
 }

@@ -2,9 +2,12 @@ package com.example.view
 
 import com.example.Styles
 import com.example.controller.MainController
-import com.example.model.Scanner
+import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType
+import javafx.scene.control.ButtonType
 import javafx.scene.control.TabPane
 import tornadofx.*
 
@@ -16,6 +19,8 @@ class MainView : View("Unity Scanner Version 0.1") {
 
     var versionText = SimpleStringProperty()
     var projectName = SimpleStringProperty()
+    //var scenesInBuild = SimpleListProperty<String>()
+
 
     override val root = vbox {
         alignment = Pos.TOP_LEFT
@@ -27,8 +32,9 @@ class MainView : View("Unity Scanner Version 0.1") {
                     setOnAction {
 
                         controller.OpenProject()
-                        versionText.set( "Unity Version: " + controller.ExtractVersionNumber())
+                        versionText.set("Unity Version: " + controller.ExtractVersionNumber())
                         projectName.set("Project Name: " + controller.GetProjectName())
+                        //scenesInBuild.set(controller.GetScenesInBuild())
                     }
                 }
                 item("Save")
@@ -36,7 +42,22 @@ class MainView : View("Unity Scanner Version 0.1") {
 
                 }
                 item("Quit")
+                {
+
+                    setOnAction {
+                        val alert = Alert(AlertType.CONFIRMATION)
+                        alert.title = "Exit Program"
+                        alert.headerText = "Exitting Program"
+                        alert.contentText = "Are you sure?"
+
+                        val result = alert.showAndWait()
+                        if (result.get() == ButtonType.OK) {
+                            System.exit(0)
+                        }
+                    }
+                }
             }
+
             menu("Edit") {
                 item("Copy")
                 item("Paste")
@@ -64,6 +85,13 @@ class MainView : View("Unity Scanner Version 0.1") {
 
             tab("Build") {
                 disableClose()
+            /*    label(scenesInBuild) {
+                    bind(scenesInBuild)
+                    addClass(Styles.heading)
+                    alignment = Pos.BASELINE_LEFT
+                }
+*/
+
             }
             tab("Packages") {
 

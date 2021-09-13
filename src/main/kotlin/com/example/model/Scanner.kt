@@ -1,7 +1,7 @@
 package com.example.model
 import tornadofx.*
 import java.io.File
-
+import java.util.*
 
 
 class Scanner {
@@ -9,12 +9,13 @@ class Scanner {
     ///Properties and constants
     var directory: File? = null
 
-    lateinit var SettingsExtractor: ProjectSettingsExtractor
-
+    lateinit var settingsExtractor: ProjectSettingsExtractor
+    lateinit var sceneExtractor:SceneExtractor
 
    //should create a struct to hold these values
     lateinit var editorVersion: String
     lateinit var projectName: String
+    lateinit var scenesInBuild: List<String>
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -22,9 +23,12 @@ class Scanner {
     fun OpenProject() {
         directory = chooseDirectory()
         editorVersion = ExtractVersionNumber()
-        SettingsExtractor = ProjectSettingsExtractor(directory)
-        SettingsExtractor.ExtractSettings()
+        settingsExtractor = ProjectSettingsExtractor(directory)
+        settingsExtractor.ExtractSettings()
         PopulateSettingsValues()
+
+        sceneExtractor = SceneExtractor(directory)
+        scenesInBuild =  sceneExtractor.ExtractScenesInBuild()
 
     }
 
@@ -43,9 +47,11 @@ class Scanner {
 
     fun PopulateSettingsValues() {
 
-        projectName = SettingsExtractor.projectName
+        projectName = settingsExtractor.projectName
 
     }
+
+
 }
 
 
