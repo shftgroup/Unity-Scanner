@@ -16,6 +16,7 @@ class Scanner {
     lateinit var editorVersion: String
     lateinit var projectName: String
     lateinit var scenesInBuild: List<String>
+    lateinit var totalScenesinAssetFolder: List<String>
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -29,6 +30,7 @@ class Scanner {
 
         sceneExtractor = SceneExtractor(directory)
         scenesInBuild =  sceneExtractor.ExtractScenesInBuild()
+        totalScenesinAssetFolder = sceneExtractor.ExtractAllScenesFromAssets()
 
     }
 

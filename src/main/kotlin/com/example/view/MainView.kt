@@ -2,14 +2,10 @@ package com.example.view
 
 import com.example.Styles
 import com.example.controller.MainController
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
-import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.ButtonBar
-import javafx.scene.control.ButtonType
 import javafx.scene.control.TabPane
 import tornadofx.*
 
@@ -23,10 +19,10 @@ class MainView : View("Unity Scanner Version 0.1") {
     var projectName = SimpleStringProperty()
 
     var scenesInBuild = SimpleStringProperty();
-
     var sceneNames = SimpleStringProperty()
 
-
+    var totalScenesInAssetsList = SimpleStringProperty()
+    var totalSceneNamesCount = SimpleStringProperty()
 
     val sceneCountLabel = label()
 
@@ -48,18 +44,33 @@ class MainView : View("Unity Scanner Version 0.1") {
                         controller.OpenProject()
                         versionText.set("Unity Version: " + controller.ExtractVersionNumber())
                         projectName.set("Project Name: " + controller.GetProjectName())
-                        scenesInBuild.set("Scenes in Build: " + controller.GetScenesInBuild().count())
-                        val scenes = controller.GetScenesInBuild()
+
+                        var scenes = controller.GetScenesInBuild()
+                        scenesInBuild.set("Scenes in Build: " +scenes.count())
 
                         var sceneNameString = ""
 
                         for(x in 0..scenes.count()-1)
                         {
                             sceneNameString += scenes[x] + "\n"
-                            println(scenes[x])
+                           // println(scenes[x])
                         }
 
                         sceneNames.set(sceneNameString)
+
+                        sceneNameString = ""
+
+                        scenes = controller.GetTotalScenesInAssets()
+                        totalSceneNamesCount.set("Total Scenes in Asset Folder: " + scenes.count())
+
+
+                        for(x in 0..scenes.count()-1)
+                        {
+                            sceneNameString += scenes[x] + "\n"
+                        }
+
+                        totalScenesInAssetsList.set(sceneNameString)
+
                     }
                 }
                 item("Save")
@@ -118,7 +129,8 @@ class MainView : View("Unity Scanner Version 0.1") {
 
                 scrollpane(fitToHeight = true, fitToWidth = true)
                 {
-                    vbox {
+                    hbox {
+                        vbox {
 
                             label(scenesInBuild)
                             {
@@ -133,8 +145,24 @@ class MainView : View("Unity Scanner Version 0.1") {
                                 isEditable = false
 
                             }
+                        }
+                        vbox {
+                            label(totalSceneNamesCount)
+                            {
+                                bind(totalSceneNamesCount)
+                                addClass(Styles.heading)
+
+                            }
+                            textarea(totalScenesInAssetsList){
+                                bind(totalScenesInAssetsList)
+                                addClass(Styles.textArea)
+                                isEditable = false
+                            }
+                        }
                     }
+
                 }
+
 
 
             }

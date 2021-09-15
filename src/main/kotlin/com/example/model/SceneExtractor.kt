@@ -11,6 +11,7 @@ class SceneExtractor(projectDirectory: File?) {
     val fileLines = ReadFileAsLinesUsingReadLines("") //this will need to change to search for file
 
     var scenesInBuild = 0
+    var scenesInAssetFolder = 0
 
 
 
@@ -48,12 +49,35 @@ class SceneExtractor(projectDirectory: File?) {
                 }
             }
         }
-        println("Total Scenes in build:" + scenesInBuild)
-        println(returnList)
+        //println("Total Scenes in build:" + scenesInBuild)
+        //println(returnList)
+
+
+
 
         return returnList
     }
 
+    fun ExtractAllScenesFromAssets():List<String>
+    {
+        var returnList = listOf<String>()
+
+        File(directory.toString() +"/Assets").walk().forEach {
+            if(it.extension == "unity")
+            {
+               // println(it.name)
+                scenesInAssetFolder += 1
+                returnList += it.name
+            }
+        }
+
+        println("Total Scenes in assets folder: " + scenesInAssetFolder.toString())
+        println(returnList)
+
+        return returnList
+
+
+    }
 
 
 

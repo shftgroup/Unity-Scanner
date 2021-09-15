@@ -26,5 +26,9 @@ class MainController: Controller() {
     {
         return mainScanner.sceneExtractor.ExtractScenesInBuild()
     }
+    fun GetTotalScenesInAssets():List<String>
+    {
+        return mainScanner.sceneExtractor.ExtractAllScenesFromAssets()
+    }
 
 }
