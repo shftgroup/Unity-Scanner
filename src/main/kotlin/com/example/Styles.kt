@@ -9,6 +9,8 @@ import tornadofx.px
 class Styles : Stylesheet() {
     companion object {
         val heading by cssclass()
+
+        val textArea by cssclass()
     }
 
     init {
@@ -17,5 +19,11 @@ class Styles : Stylesheet() {
             fontSize = 20.px
             fontWeight = FontWeight.BOLD
         }
+
+        textArea {
+            fontSize = 15.px
+            fontWeight = FontWeight.BOLD
+        }
+
     }
 }

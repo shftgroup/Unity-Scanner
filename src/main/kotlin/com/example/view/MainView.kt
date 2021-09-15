@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
+import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
 import javafx.scene.control.TabPane
 import tornadofx.*
@@ -48,9 +49,17 @@ class MainView : View("Unity Scanner Version 0.1") {
                         versionText.set("Unity Version: " + controller.ExtractVersionNumber())
                         projectName.set("Project Name: " + controller.GetProjectName())
                         scenesInBuild.set("Scenes in Build: " + controller.GetScenesInBuild().count())
-
                         val scenes = controller.GetScenesInBuild()
-                        sceneNames.set(scenes[0])
+
+                        var sceneNameString = ""
+
+                        for(x in 0..scenes.count()-1)
+                        {
+                            sceneNameString += scenes[x] + "\n"
+                            println(scenes[x])
+                        }
+
+                        sceneNames.set(sceneNameString)
                     }
                 }
                 item("Save")
@@ -61,23 +70,28 @@ class MainView : View("Unity Scanner Version 0.1") {
                 {
 
                     setOnAction {
-                        val alert = Alert(AlertType.CONFIRMATION)
-                        alert.title = "Exit Program"
-                        alert.headerText = "Exitting Program"
-                        alert.contentText = "Are you sure?"
 
-                        val result = alert.showAndWait()
-                        if (result.get() == ButtonType.OK) {
-                            System.exit(0)
-                        }
+                        alert(
+                            type = Alert.AlertType.CONFIRMATION,
+                            header = "Delete User",
+                            content = "Delete User ",
+                            actionFn = {
+                                    btnType ->
+                                if (btnType.buttonData == ButtonBar.ButtonData.OK_DONE) {
+                                   System.exit(0)
+                                }
+                            }
+                        )
                     }
                 }
             }
-
+/*
             menu("Edit") {
                 item("Copy")
                 item("Paste")
             }
+
+ */
         }
 
         hbox {
@@ -115,7 +129,8 @@ class MainView : View("Unity Scanner Version 0.1") {
                             textarea(sceneNames)
                             {
                                 bind(sceneNames)
-                                addClass(Styles.heading)
+                                addClass(Styles.textArea)
+                                isEditable = false
 
                             }
                     }
