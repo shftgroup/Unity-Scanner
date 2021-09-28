@@ -4,6 +4,9 @@ import com.example.Styles
 import com.example.controller.MainController
 import com.example.model.PackageManifest
 import javafx.beans.property.SimpleStringProperty
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
+import javafx.event.EventHandler
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
@@ -30,6 +33,10 @@ class MainView : View("Unity Scanner Version 0.1") {
 
     val sceneCountLabel = label()
 
+
+    val packageNamesList: ObservableList<String> = FXCollections.observableArrayList()
+    var currentPackageInfo = SimpleStringProperty()
+
     //now ready to populate UI
     var jpk = PackageManifest()
 
@@ -46,7 +53,7 @@ class MainView : View("Unity Scanner Version 0.1") {
 
         val pm = PackageManifest()
         pm.LoadManifest("None")
-
+        //this code needs to move down to the open project menu item
 
 
         //val jsonFile = File("C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache/com.unity.mathematics@1.1.0").readText()
@@ -96,9 +103,10 @@ class MainView : View("Unity Scanner Version 0.1") {
                     setOnAction {
 
 
-                        val jsonFile = File("C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache/com.unity.mathematics@1.1.0/package.json")
-
-                       // jpk.updateModel(jpk)
+                       packageNamesList.add("Cinemachine")
+                        packageNamesList.add("math")
+                        packageNamesList.add("animation")
+                        packageNamesList.add("2d")
                     }
 
                 }
@@ -192,6 +200,26 @@ class MainView : View("Unity Scanner Version 0.1") {
 
             }
             tab("Packages") {
+
+                hbox{
+                    listview(values = packageNamesList)
+                    {
+                       //prefWidth = 500.0
+                        setOnMouseClicked() {
+                            val index = this.selectionModel.selectedIndex;
+
+                            println("Click! on Index " + index)
+                            currentPackageInfo.set(index.toString())
+
+                        }
+                    }
+                    textarea("Test")
+                    {
+                        bind(currentPackageInfo)
+
+                    }
+                }
+
 
                 }
             tab("Assets") {
