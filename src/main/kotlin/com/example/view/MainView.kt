@@ -2,15 +2,19 @@ package com.example.view
 
 import com.example.Styles
 import com.example.controller.MainController
+import com.example.model.PackageManifest
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.TabPane
 import tornadofx.*
+import java.io.File
+import javax.json.JsonObject
 
 
 class MainView : View("Unity Scanner Version 0.1") {
+
 
 
     val controller:MainController by inject()
@@ -26,6 +30,10 @@ class MainView : View("Unity Scanner Version 0.1") {
 
     val sceneCountLabel = label()
 
+    //now ready to populate UI
+    var jpk = PackageManifest()
+
+
     //var scenesInBuild = SimpleListProperty<String>()
 
 
@@ -33,6 +41,16 @@ class MainView : View("Unity Scanner Version 0.1") {
         alignment = Pos.TOP_LEFT
 
         scenesInBuild.set("Scenes in Build: 0")
+////////////////////////////////
+        val file = File("C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache/com.unity.mathematics@1.1.0/package.json")
+
+        val pm = PackageManifest()
+        pm.LoadManifest("None")
+
+
+
+        //val jsonFile = File("C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache/com.unity.mathematics@1.1.0").readText()
+//////////////////////////////////////////////
 
 
         menubar {
@@ -75,6 +93,13 @@ class MainView : View("Unity Scanner Version 0.1") {
                 }
                 item("Save")
                 {
+                    setOnAction {
+
+
+                        val jsonFile = File("C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache/com.unity.mathematics@1.1.0/package.json")
+
+                       // jpk.updateModel(jpk)
+                    }
 
                 }
                 item("Quit")
@@ -84,8 +109,8 @@ class MainView : View("Unity Scanner Version 0.1") {
 
                         alert(
                             type = Alert.AlertType.CONFIRMATION,
-                            header = "Delete User",
-                            content = "Delete User ",
+                            header = "Exit Program",
+                            content = "Do you want to exit?",
                             actionFn = {
                                     btnType ->
                                 if (btnType.buttonData == ButtonBar.ButtonData.OK_DONE) {
