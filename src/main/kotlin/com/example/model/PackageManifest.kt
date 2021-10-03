@@ -5,9 +5,11 @@ import java.io.File
 
 import com.google.gson.Gson
 
-class PackageManifest() {
+class PackageManifest(projectDirectory:File? ) {
 
-    val packageDirectory = "C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache"
+    //val packageDirectory = "C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache"
+    val packageDirectory = projectDirectory?.path + "/Library/PackageCache"
+
 
     var packageList = mutableListOf<String>()
 
@@ -15,7 +17,7 @@ class PackageManifest() {
 
 
 
-    fun LoadManifest(filename:String)
+    fun LoadManifest()
     {
 
         FindPackageFiles()

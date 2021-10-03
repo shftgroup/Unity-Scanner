@@ -13,7 +13,9 @@ import javafx.scene.control.ButtonBar
 import javafx.scene.control.TabPane
 import tornadofx.*
 import java.io.File
+import java.lang.Exception
 import javax.json.JsonObject
+import javax.swing.plaf.synth.Region
 
 
 class MainView : View("Unity Scanner Version 0.1") {
@@ -34,11 +36,13 @@ class MainView : View("Unity Scanner Version 0.1") {
     val sceneCountLabel = label()
 
 
-    val packageNamesList: ObservableList<String> = FXCollections.observableArrayList()
+    var projectPackages: ObservableList<PackageManifest.UnityPackage> = FXCollections.observableArrayList()
+   // lateinit var packageNamesList: ObservableList<PackageManifest.UnityPackage>
+    var packageNames:ObservableList<String> = FXCollections.observableArrayList()
     var currentPackageInfo = SimpleStringProperty()
 
     //now ready to populate UI
-    var jpk = PackageManifest()
+    //var jpk = PackageManifest()
 
 
     //var scenesInBuild = SimpleListProperty<String>()
@@ -49,10 +53,10 @@ class MainView : View("Unity Scanner Version 0.1") {
 
         scenesInBuild.set("Scenes in Build: 0")
 ////////////////////////////////
-        val file = File("C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache/com.unity.mathematics@1.1.0/package.json")
+      //  val file = File("C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache/com.unity.mathematics@1.1.0/package.json")
 
-        val pm = PackageManifest()
-        pm.LoadManifest("None")
+     //  val pm = PackageManifest()
+     //   pm.LoadManifest("None")
         //this code needs to move down to the open project menu item
 
 
@@ -69,6 +73,8 @@ class MainView : View("Unity Scanner Version 0.1") {
                         controller.OpenProject()
                         versionText.set("Unity Version: " + controller.ExtractVersionNumber())
                         projectName.set("Project Name: " + controller.GetProjectName())
+
+
 
                         var scenes = controller.GetScenesInBuild()
                         scenesInBuild.set("Scenes in Build: " +scenes.count())
@@ -96,17 +102,30 @@ class MainView : View("Unity Scanner Version 0.1") {
 
                         totalScenesInAssetsList.set(sceneNameString)
 
+                        projectPackages = controller?.GetPackages()
+
+
+
+                        for(singlePackage in projectPackages)
+                        {
+                            packageNames.add(singlePackage.name)
+                        }
+
                     }
                 }
                 item("Save")
                 {
                     setOnAction {
 
-
+                    /*
                        packageNamesList.add("Cinemachine")
                         packageNamesList.add("math")
                         packageNamesList.add("animation")
                         packageNamesList.add("2d")
+*/
+
+
+
                     }
 
                 }
@@ -202,19 +221,71 @@ class MainView : View("Unity Scanner Version 0.1") {
             tab("Packages") {
 
                 hbox{
-                    listview(values = packageNamesList)
+
+                    try{
+                    listview(values = packageNames)
                     {
+
                        //prefWidth = 500.0
                         setOnMouseClicked() {
                             val index = this.selectionModel.selectedIndex;
 
-                            println("Click! on Index " + index)
-                            currentPackageInfo.set(index.toString())
+                            lateinit var packageDetails:PackageManifest.UnityPackage
 
+                            println("Click! on Index " + index)
+
+                            if(projectPackages.count() > 0){
+
+                                if(index >=0 && index < projectPackages.count()) {
+                                    packageDetails = projectPackages[index]
+                                }
+                                var detailsString = "Package Details:\n"
+
+
+                                detailsString += "Package Name: " + packageDetails.name + "\n"
+                                detailsString += "Package Version: " + packageDetails.version + "\n"
+                                detailsString += "Lowest Compatible Unity Version: " + packageDetails.unity + "\n"
+                                detailsString += "Display name: " + packageDetails.displayName + "\n"
+                                detailsString += "Package Details: " + packageDetails.description + "\n\n"
+
+                                detailsString += "Source Code Repository Info:\n"
+
+                                if(packageDetails.repository != null) {
+                                    detailsString += "VCS used: " + packageDetails.repository.type + "\n"
+                                    detailsString += "Repository URL: " + packageDetails.repository.url + "\n"
+                                    detailsString += "Repository Revision: " + packageDetails.repository.revision + "\n\n"
+                                }
+                                else{
+                                    detailsString += "None\n\n"
+                                }
+
+                                if(packageDetails.dependendies.count() > 0)
+                                {
+                                detailsString += "Dependencies:\n"
+                                detailsString += packageDetails.dependendies.toString() + "\n\n"
+
+                                }
+                                else
+                                {
+                                    detailsString += "No dependencies were listed for this package\n\n"
+                                }
+
+                                detailsString += "Total Packages: " + projectPackages.count()
+
+                            currentPackageInfo.set(detailsString)
+                            }
                         }
                     }
-                    textarea("Test")
+                    }
+                    catch(e:Exception)
                     {
+
+                    }
+                    textarea()
+                    {
+                        prefWidth = 1200.0
+                        prefHeight = 600.0
+                        //setMaxSize((prefWidth),(prefHeight))
                         bind(currentPackageInfo)
 
                     }

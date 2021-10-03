@@ -1,7 +1,11 @@
 package com.example.controller
 
+import com.example.main
+import com.example.model.PackageManifest
 import com.example.model.Scanner
 import javafx.beans.property.SimpleListProperty
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import tornadofx.Controller
 import tornadofx.chooseDirectory
 
@@ -31,4 +35,17 @@ class MainController: Controller() {
         return mainScanner.sceneExtractor.ExtractAllScenesFromAssets()
     }
 
+    fun GetPackages(): ObservableList<PackageManifest.UnityPackage>
+    {
+
+        val packageNamesList: ObservableList<PackageManifest.UnityPackage> = FXCollections.observableArrayList()
+
+        for(singlePackage in mainScanner.packageList.packages)
+        {
+            packageNamesList.add(singlePackage)
+        }
+
+        return packageNamesList
+
+    }
 }

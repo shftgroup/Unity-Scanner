@@ -11,12 +11,14 @@ class Scanner {
 
     lateinit var settingsExtractor: ProjectSettingsExtractor
     lateinit var sceneExtractor:SceneExtractor
+    lateinit var packageList:PackageManifest
 
-   //should create a struct to hold these values
+
     lateinit var editorVersion: String
     lateinit var projectName: String
     lateinit var scenesInBuild: List<String>
     lateinit var totalScenesinAssetFolder: List<String>
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -31,6 +33,10 @@ class Scanner {
         sceneExtractor = SceneExtractor(directory)
         scenesInBuild =  sceneExtractor.ExtractScenesInBuild()
         totalScenesinAssetFolder = sceneExtractor.ExtractAllScenesFromAssets()
+
+        packageList = PackageManifest(directory)
+        packageList.LoadManifest()
+
 
     }
 
