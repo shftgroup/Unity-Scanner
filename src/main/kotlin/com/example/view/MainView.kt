@@ -234,45 +234,52 @@ class MainView : View("Unity Scanner Version 0.1") {
 
                             println("Click! on Index " + index)
 
-                            if(projectPackages.count() > 0){
+                            try{
 
-                                if(index >=0 && index < projectPackages.count()) {
-                                    packageDetails = projectPackages[index]
-                                }
-                                var detailsString = "Package Details:\n"
+                                if(projectPackages.count() > 0){
 
+                                 if(index >=0 && index < projectPackages.count()) {
+                                     packageDetails = projectPackages[index]
+                                    }
+                                    var detailsString = "Package Details:\n"
 
-                                detailsString += "Package Name: " + packageDetails.name + "\n"
-                                detailsString += "Package Version: " + packageDetails.version + "\n"
-                                detailsString += "Lowest Compatible Unity Version: " + packageDetails.unity + "\n"
-                                detailsString += "Display name: " + packageDetails.displayName + "\n"
-                                detailsString += "Package Details: " + packageDetails.description + "\n\n"
+                                    println(packageDetails.name)
+                                    detailsString += "Package Name: " + packageDetails.name + "\n"
+                                    detailsString += "Package Version: " + packageDetails.version + "\n"
+                                    detailsString += "Lowest Compatible Unity Version: " + packageDetails.unity + "\n"
+                                    detailsString += "Display name: " + packageDetails.displayName + "\n"
+                                    detailsString += "Package Details: " + packageDetails.description + "\n\n"
 
-                                detailsString += "Source Code Repository Info:\n"
+                                    detailsString += "Source Code Repository Info:\n"
 
-                                if(packageDetails.repository != null) {
-                                    detailsString += "VCS used: " + packageDetails.repository.type + "\n"
-                                    detailsString += "Repository URL: " + packageDetails.repository.url + "\n"
-                                    detailsString += "Repository Revision: " + packageDetails.repository.revision + "\n\n"
-                                }
-                                else{
-                                    detailsString += "None\n\n"
-                                }
+                                    if(packageDetails.repository != null) {
+                                        detailsString += "VCS used: " + packageDetails.repository.type + "\n"
+                                        detailsString += "Repository URL: " + packageDetails.repository.url + "\n"
+                                        detailsString += "Repository Revision: " + packageDetails.repository.revision + "\n\n"
+                                    }
+                                    else{
+                                        detailsString += "None\n\n"
+                                    }
 
-                                if(packageDetails.dependendies.count() > 0)
-                                {
-                                detailsString += "Dependencies:\n"
-                                detailsString += packageDetails.dependendies.toString() + "\n\n"
+                                    if(packageDetails.dependendies.count() > 0)
+                                    {
+                                        detailsString += "Dependencies:\n"
+                                        detailsString += packageDetails.dependendies.toString() + "\n\n"
 
-                                }
-                                else
-                                {
-                                    detailsString += "No dependencies were listed for this package\n\n"
-                                }
+                                    }
+                                    else
+                                    {
+                                        detailsString += "No dependencies were listed for this package\n\n"
+                                    }
 
-                                detailsString += "Total Packages: " + projectPackages.count()
+                                    detailsString += "Total Packages: " + projectPackages.count()
 
-                            currentPackageInfo.set(detailsString)
+                                    currentPackageInfo.set(detailsString)
+                            }
+                            }
+                            catch(e:Exception)
+                            {
+
                             }
                         }
                     }
