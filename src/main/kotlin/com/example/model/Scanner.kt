@@ -12,6 +12,7 @@ class Scanner {
     lateinit var settingsExtractor: ProjectSettingsExtractor
     lateinit var sceneExtractor:SceneExtractor
     lateinit var packageList:PackageManifest
+    lateinit var assets:AssetsExtractor
 
 
     lateinit var editorVersion: String
@@ -19,7 +20,7 @@ class Scanner {
     lateinit var scenesInBuild: List<String>
     lateinit var totalScenesinAssetFolder: List<String>
 
-
+    lateinit var assetInfo:String
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -37,7 +38,9 @@ class Scanner {
         packageList = PackageManifest(directory)
         packageList.LoadManifest()
 
-
+        assets = AssetsExtractor(directory)
+        assets.ScanAssetFolder()
+      //  assetInfo = assets.as
     }
 
     //This will find the version number.  Will need to be modified to search for file

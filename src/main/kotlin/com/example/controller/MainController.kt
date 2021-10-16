@@ -48,4 +48,9 @@ class MainController: Controller() {
         return packageNamesList
 
     }
+
+    fun GetAssetInfo():String
+    {
+        return ""
+    }
 }

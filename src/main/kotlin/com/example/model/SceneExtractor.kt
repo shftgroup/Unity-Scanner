@@ -71,8 +71,8 @@ class SceneExtractor(projectDirectory: File?) {
             }
         }
 
-        println("Total Scenes in assets folder: " + scenesInAssetFolder.toString())
-        println(returnList)
+       // println("Total Scenes in assets folder: " + scenesInAssetFolder.toString())
+      //  println(returnList)
 
         return returnList
 
