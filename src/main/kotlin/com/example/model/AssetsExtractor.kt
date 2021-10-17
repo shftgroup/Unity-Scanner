@@ -12,71 +12,96 @@ class AssetsExtractor(projectDirectory: File?) {
 
 
 
-    val imageTypes = AssetType("Images", listOf("png","bmp","tif","tiff","tga","gif","jpg","jpeg","psd","iff","pict","pic","pct","exr","hdr"))
-    val audioTypes = AssetType("Audio", listOf("ogg", "aif", "aiff", "flac", "wav", "mp3", "mod", "it", "s3m","xm"))
-    val modelTypes = AssetType("Models", listOf("fbx", "mb", "ma", "max", "jas", "dae", "dxf", "obj", "c4d", "blend", "lxo"))
-    val nativeTypes = AssetType("Unity Native", listOf("anim", "animset", "asset", "blendtree", "buildreport", "colors", "controller", "cubemap"
-        , "curves", "curvesNormalized", "flare", "fontsettings", "giparams", "gradients", "guiskin", "ht", "mask", "mat", "mesh"
-        , "mixer", "overrideController", "particleCurves", "particleCurvesSigned", "particleDoubleCurves", "particleDoubleCurvesSigned", "physicMaterial", "physicsMaterial2D"
-        , "playable", "preset", "renderTexture", "shadervariants", "spriteatlas", "state", "statemachine", "texture2D", "transition", "webCamTexture", "brush", "terrainlayer"
-        , "signal"))
-    val textTypes = AssetType("Text", listOf("txt", "html", "htm", "xml", "json", "csv", "yaml", "bytes", "fnt", "manifest", "md", "js", "boo", "rsp"))
+    val imageTypes = AssetType("Images", mutableListOf("png","bmp","tif","tiff","tga","gif","jpg","jpeg","psd","iff","pict","pic","pct","exr","hdr"))
+    val audioTypes = AssetType("Audio", mutableListOf("ogg", "aif", "aiff", "flac", "wav", "mp3", "mod", "it", "s3m","xm"))
+    val modelTypes = AssetType("Models", mutableListOf("fbx", "mb", "ma", "max", "jas", "dae", "dxf", "obj", "c4d", "blend", "lxo"))
+    val nativeTypes = AssetType("Unity Native", mutableListOf("anim", "animset", "asset", "blendtree", "buildreport", "colors", "controller", "cubemap"
+        , "curves", "curvesnormalized", "flare", "fontsettings", "giparams", "gradients", "guiskin", "ht", "mask", "mat", "mesh"
+        , "mixer", "overridecontroller", "particlecurves", "particlecurvessigned", "particledoublecurves", "particledoublecurvessigned", "physicmaterial", "physicsmaterial2D"
+        , "playable", "preset", "rendertexture", "shadervariants", "spriteatlas", "state", "statemachine", "texture2D", "transition", "webcamtexture", "brush", "terrainlayer"
+        , "signal")
+    )
+    val textTypes = AssetType("Text", mutableListOf("txt", "html", "htm", "xml", "json", "csv", "yaml", "bytes", "fnt", "manifest", "md", "js", "boo", "rsp"))
 
-    val prefabType = AssetType("Prefabs", listOf("prefab"))
+    val prefabType = AssetType("Prefabs", mutableListOf("prefab"))
 
-    //plugin
-    //font
-    //video
-    //script
+    val pluginTypes = AssetType("Plugins", mutableListOf("dll", "winmd", "so", "jar", "java", "kt", "aar", "suprx", "prx", "rpl"
+        , "cpp", "cc", "c", "h", "jslib", "jspre", "bc", "a", "m", "mm", "swift", "xib", "bundle", "dylib", "config")
+    )
+
+    val fontTypes = AssetType("Fonts", mutableListOf("ttf", "dfont", "otf", "ttc"))
+
+    val videoTypes = AssetType("Video", mutableListOf("avi", "asf", "wmv", "mov", "dv", "mp4", "m4v", "mpg", "mpeg", "ogv", "vp8", "webm"))
+
+    val scriptTypes = AssetType("Scripts", mutableListOf("cs"))
+
+    val vfxTypes = AssetType("Visual Effects", mutableListOf("vfx", "vfxoperator", "vfxblock"))
+
+    val shaderTypes = AssetType("Shaders", mutableListOf("cginc", "cg", "glslinc", "hlsl", "shader"))
+
+    val otherTypes = AssetType("Other Types", mutableListOf())
 
     fun ScanAssetFolder()
     {
-
-
-
 
         File(assetDirectory).walkTopDown().forEach {
 
             if(!it.isDirectory) {
 
-                if(imageTypes.types.contains(it.extension))
+                if(imageTypes.types.contains(it.extension.toLowerCase()))
                 {
-                    val index = imageTypes.types.indexOf(it.extension)
-                    imageTypes.counts[index]++
-                    imageTypes.typeTotal++
+                    AssignType(imageTypes,it.extension)
                 }
-                else if(audioTypes.types.contains((it.extension)))
+                else if(audioTypes.types.contains((it.extension.toLowerCase())))
                 {
-                    val index = audioTypes.types.indexOf(it.extension)
-                    audioTypes.counts[index]++
-                    audioTypes.typeTotal++;
+                    AssignType(audioTypes,it.extension)
                 }
-                else if(modelTypes.types.contains((it.extension)))
+                else if(modelTypes.types.contains((it.extension).toLowerCase()))
                 {
-                    val index = modelTypes.types.indexOf((it.extension))
-                    modelTypes.counts[index]++
-                    modelTypes.typeTotal++
+                    AssignType(modelTypes,it.extension)
                 }
-                else if(nativeTypes.types.contains((it.extension)))
+                else if(nativeTypes.types.contains((it.extension.toLowerCase())))
                 {
-                    val index = nativeTypes.types.indexOf((it.extension))
-                    nativeTypes.counts[index]++
-                    nativeTypes.typeTotal++
+                    AssignType(nativeTypes,it.extension)
                 }
-                else if(textTypes.types.contains((it.extension)))
+                else if(textTypes.types.contains((it.extension.toLowerCase())))
                 {
-                    val index = textTypes.types.indexOf((it.extension))
-                    textTypes.counts[index]++
-                    textTypes.typeTotal++
-                }
-                else if(prefabType.types.contains((it.extension)))
-                {
-                    val index = prefabType.types.indexOf((it.extension))
-                    prefabType.counts[index]++
-                    prefabType.typeTotal++
-                }
-               // println(it.name)
+                    AssignType(textTypes,it.extension)
 
+                }
+                else if(prefabType.types.contains((it.extension.toLowerCase())))
+                {
+                    AssignType(prefabType,it.extension)
+                }
+                else if(pluginTypes.types.contains((it.extension.toLowerCase())))
+                {
+                    AssignType(pluginTypes,it.extension)
+                }
+                else if(fontTypes.types.contains(it.extension.toLowerCase()))
+                {
+                    AssignType(fontTypes,it.extension)
+                }
+                else if(videoTypes.types.contains(it.extension.toLowerCase()))
+                {
+                    AssignType(videoTypes,it.extension)
+                }
+                else if(scriptTypes.types.contains(it.extension.toLowerCase()))
+                {
+                    AssignType(scriptTypes,it.extension)
+                }
+                else if(vfxTypes.types.contains(it.extension.toLowerCase()))
+                {
+                    AssignType(vfxTypes,it.extension)
+                }
+                else if(shaderTypes.types.contains(it.extension.toLowerCase()))
+                {
+                    AssignType(shaderTypes,it.extension)
+                }
+                else
+                {
+                    AssignToOtherType(it.extension)
+                }
+                    //need an add to other type here
 
             }
             else
@@ -87,51 +112,77 @@ class AssetsExtractor(projectDirectory: File?) {
         }
 
         println("Total Asset Directories: " + directoryCount)
-
         println("Audio Types Found: " + audioTypes.typeTotal)
 
-
-
-
         println("Image Types Found: " + imageTypes.typeTotal)
+        PrintResults(imageTypes)
 
-        for(i in 0..imageTypes.types.count()-1)
-        {
-            println(imageTypes.types[i] + ": " + imageTypes.counts[i] )
-        }
         println("Model Types Found: " + modelTypes.typeTotal)
-        for(i in 0..modelTypes.types.count()-1)
-        {
-            println(modelTypes.types[i] + ": " + modelTypes.counts[i] )
-        }
-       println("Unity Native Types Found: " + nativeTypes.typeTotal)
-        for(i in 0..nativeTypes.types.count()-1)
-        {
-            println(nativeTypes.types[i] + ": " + nativeTypes.counts[i] )
-        }
-        println("Text Types Found: " + textTypes.typeTotal)
-        for(i in 0..textTypes.types.count()-1)
-        {
-            println(textTypes.types[i] + ": " + textTypes.counts[i] )
-        }
+        PrintResults(modelTypes)
 
-        for(i in 0..prefabType.types.count()-1)
+        println("Unity Native Types Found: " + nativeTypes.typeTotal)
+        PrintResults(nativeTypes)
+
+        println("Text Types Found: " + textTypes.typeTotal)
+        PrintResults(textTypes)
+
+        PrintResults(prefabType)
+
+        println("Other Types Found: " + otherTypes.typeTotal)
+        PrintResults(otherTypes)
+
+
+
+    }
+    fun PrintResults(currentType: AssetType)
+    {
+        for(i in 0..currentType.types.count()-1)
         {
-            println(prefabType.types[i] + ": " + prefabType.counts[i] )
+            println(currentType.types[i] + ": " + currentType.counts[i] )
         }
     }
 
-
-    class AssetType(val name:String, var types:List<String> )
+    fun AssignType(currentType:AssetType, extension:String)
     {
-        var counts = IntArray(types.count()) {_->0}
+       val lExtension = extension.toLowerCase()
+
+        val index = currentType.types.indexOf(lExtension)
+        currentType.counts[index]++
+        currentType.typeTotal++
+    }
+
+    fun AssignToOtherType(extension: String)
+    {
+        if(otherTypes.types.contains(extension))
+        {
+            val index = otherTypes.types.indexOf(extension)
+            otherTypes.counts[index]++
+        }
+        else
+        {
+            otherTypes.types.add(extension)
+            val index = otherTypes.types.indexOf(extension)
+            otherTypes.counts[index]++
+            otherTypes.typeTotal++
+        }
+    }
+
+    class AssetType(val name:String, var types:MutableList<String> )
+    {
+        lateinit var counts:IntArray
 
         var typeTotal:Int = 0;
 
+        init
+        {
+            if (types.count() == 0) {
+                counts= IntArray(50) {_ -> 0}
+            }
+            else
+            {
+                counts = IntArray(types.count()) {_ -> 0}
+            }
+        }
+
     }
 }
-//image types
-//jpg, jpeg, tif, tiff, tga, gif, png, psd, bmp, iff, pict, pic, pct, exr, hdr
-
-//Audio types
-//ogg, aif, aiff, flac, wav, mp3, mod, it, s3m, xm
