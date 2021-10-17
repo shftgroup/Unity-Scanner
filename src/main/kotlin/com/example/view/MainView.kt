@@ -41,6 +41,8 @@ class MainView : View("Unity Scanner Version 0.1") {
     var packageNames:ObservableList<String> = FXCollections.observableArrayList()
     var currentPackageInfo = SimpleStringProperty()
 
+    var assetInfo = SimpleStringProperty()
+
     //now ready to populate UI
     //var jpk = PackageManifest()
 
@@ -104,7 +106,7 @@ class MainView : View("Unity Scanner Version 0.1") {
 
                         projectPackages = controller?.GetPackages()
 
-
+                        assetInfo.set(controller.GetAssetInfo())
 
                         for(singlePackage in projectPackages)
                         {
@@ -225,7 +227,7 @@ class MainView : View("Unity Scanner Version 0.1") {
                     try{
                     listview(values = packageNames)
                     {
-
+                        addClass(Styles.textArea)
                        //prefWidth = 500.0
                         setOnMouseClicked() {
                             val index = this.selectionModel.selectedIndex;
@@ -302,6 +304,15 @@ class MainView : View("Unity Scanner Version 0.1") {
                 }
             tab("Assets") {
 
+                hbox {
+                    textarea(assetInfo)
+                    {
+                        bind(assetInfo)
+                        addClass(Styles.textArea)
+                        isEditable = false
+
+                    }
+                }
             }
 
             }

@@ -6,7 +6,7 @@ class AssetsExtractor(projectDirectory: File?) {
 
     val assetDirectory = projectDirectory?.path + "/Assets"
 
-    lateinit var assetInfo:String
+     var assetInfo:String = ""
 
     var  directoryCount:Int = 0
 
@@ -111,29 +111,87 @@ class AssetsExtractor(projectDirectory: File?) {
             }
         }
 
-        println("Total Asset Directories: " + directoryCount)
-        println("Audio Types Found: " + audioTypes.typeTotal)
+        assetInfo += "Folders in Assets Directory: " + directoryCount + '\n'
 
-        println("Image Types Found: " + imageTypes.typeTotal)
-        PrintResults(imageTypes)
 
-        println("Model Types Found: " + modelTypes.typeTotal)
-        PrintResults(modelTypes)
+        assetInfo += "\nImage Files In Project:\n"
+        AddToResultsString(imageTypes)
 
-        println("Unity Native Types Found: " + nativeTypes.typeTotal)
-        PrintResults(nativeTypes)
 
-        println("Text Types Found: " + textTypes.typeTotal)
-        PrintResults(textTypes)
+        assetInfo += "\nAudio Files in Project:\n"
+        AddToResultsString(audioTypes)
 
-        PrintResults(prefabType)
 
-        println("Other Types Found: " + otherTypes.typeTotal)
-        PrintResults(otherTypes)
+        assetInfo += "\nModel Files in Project:\n"
+        AddToResultsString(modelTypes)
 
+
+        assetInfo += "\nUnity Native Files in Project:\n"
+        AddToResultsString(nativeTypes)
+
+
+        assetInfo += "\nText Files in Project:\n"
+        AddToResultsString(textTypes)
+
+
+        assetInfo += "\nPrefab Files in Project:\n"
+        AddToResultsString(prefabType)
+
+
+        assetInfo += "\nPlugin Files in Project:\n"
+        AddToResultsString(pluginTypes)
+
+
+        assetInfo += "\nFont Files in Project:\n"
+        AddToResultsString(fontTypes)
+
+
+        assetInfo += "\nVideo Files in Project:\n"
+        AddToResultsString(videoTypes)
+
+        assetInfo += "\nScript Files in Project:\n"
+        AddToResultsString(scriptTypes)
+
+
+        assetInfo += "\nVisual Effect Files in Project:\n"
+        AddToResultsString(vfxTypes)
+
+
+        assetInfo += "\nShader Files in Project:\n"
+        AddToResultsString(shaderTypes)
+
+        assetInfo += "\nOther File types in Project:\n"
+        AddToResultsString(otherTypes)
 
 
     }
+    fun AddToResultsString(currentType: AssetType)
+    {
+        var amountPrinted = 0;
+
+        if(currentType.typeTotal == 0)
+            assetInfo += "None"
+
+        for(i in 0..currentType.types.count()-1)
+        {
+            if(currentType.counts[i] == 0)
+                continue
+
+            assetInfo += currentType.types[i] + ": " + currentType.counts[i] + "   "
+            amountPrinted++
+
+            if(amountPrinted == GetTotalDifferentTypes(currentType))
+                continue
+
+            if(amountPrinted > 5 )
+            {
+                assetInfo += '\n'
+                amountPrinted = 0
+            }
+        }
+        assetInfo += '\n'
+    }
+
     fun PrintResults(currentType: AssetType)
     {
         for(i in 0..currentType.types.count()-1)
@@ -165,6 +223,19 @@ class AssetsExtractor(projectDirectory: File?) {
             otherTypes.counts[index]++
             otherTypes.typeTotal++
         }
+    }
+
+    fun GetTotalDifferentTypes(currentType: AssetType):Int
+    {
+        var total:Int = 0
+
+        for(i in 0..currentType.counts.count()-1)
+        {
+            if( currentType.counts[i] > 0)
+                total++
+        }
+
+        return total
     }
 
     class AssetType(val name:String, var types:MutableList<String> )

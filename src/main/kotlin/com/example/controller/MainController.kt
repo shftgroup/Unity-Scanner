@@ -51,6 +51,6 @@ class MainController: Controller() {
 
     fun GetAssetInfo():String
     {
-        return ""
+        return mainScanner.assets.assetInfo
     }
 }
