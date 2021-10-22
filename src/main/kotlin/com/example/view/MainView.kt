@@ -14,6 +14,7 @@ import javafx.scene.control.TabPane
 import javafx.scene.image.Image
 import javafx.scene.input.KeyEvent
 import tornadofx.*
+import java.io.File
 import java.io.FileInputStream
 
 
@@ -49,8 +50,9 @@ class MainView : View("Unity Scanner Version 0.1") {
     var imagePaths = mutableListOf<String>()
     var currentImage = SimpleObjectProperty<Image>()
 
-
-
+    var textList:ObservableList<String> = FXCollections.observableArrayList()
+    var currentText = SimpleStringProperty()
+    var textPaths = mutableListOf<String>()
 
 
 
@@ -122,9 +124,15 @@ class MainView : View("Unity Scanner Version 0.1") {
 
                         for(imageName in controller.GetImageList())
                         {
-                            imageList.add(imageName.substringAfterLast('\\'))
+                            imageList.add(imageName.substringAfterLast('/').substringAfterLast('\\'))
                             imagePaths.add(imageName)
                         }
+                        for(text in controller.mainScanner.assets.textList)
+                        {
+                            textList.add(text.substringAfterLast('/').substringAfterLast('\\'))
+                            textPaths.add(text)
+                        }
+
 
                     }
                 }
@@ -193,8 +201,7 @@ class MainView : View("Unity Scanner Version 0.1") {
             tab("Build") {
                 disableClose()
 
-                scrollpane(fitToHeight = true, fitToWidth = true)
-                {
+
                     hbox {
                         vbox {
 
@@ -207,6 +214,7 @@ class MainView : View("Unity Scanner Version 0.1") {
                             textarea(sceneNames)
                             {
                                 bind(sceneNames)
+                                prefHeight = 650.0
                                 addClass(Styles.textArea)
                                 isEditable = false
 
@@ -221,11 +229,12 @@ class MainView : View("Unity Scanner Version 0.1") {
                             }
                             textarea(totalScenesInAssetsList){
                                 bind(totalScenesInAssetsList)
+                                prefHeight = 650.0
                                 addClass(Styles.textArea)
                                 isEditable = false
                             }
                         }
-                    }
+
 
                 }
 
@@ -240,7 +249,8 @@ class MainView : View("Unity Scanner Version 0.1") {
                     listview(values = packageNames)
                     {
                         addClass(Styles.textArea)
-                       //prefWidth = 500.0
+                       prefWidth = 500.0
+                        prefHeight = 650.0
                         setOnMouseClicked() {
                             val index = this.selectionModel.selectedIndex;
 
@@ -305,7 +315,7 @@ class MainView : View("Unity Scanner Version 0.1") {
                     textarea()
                     {
                         prefWidth = 1200.0
-                        prefHeight = 600.0
+                        prefHeight = 650.0
                         //setMaxSize((prefWidth),(prefHeight))
                         bind(currentPackageInfo)
 
@@ -320,7 +330,7 @@ class MainView : View("Unity Scanner Version 0.1") {
 
                     tab("Asset Summary")
                     {
-
+                        prefHeight = 650.0
                         hbox {
                             textarea(assetInfo)
                             {
@@ -377,14 +387,50 @@ class MainView : View("Unity Scanner Version 0.1") {
                     }
                     tab("Text")
                     {
+                        hbox {
+                            listview(values = textList)
+                            {
+                                addClass(Styles.textArea)
 
+                                prefWidth = 600.0
+
+                                try {
+                                    setOnMouseClicked() {
+                                        val index = this.selectionModel.selectedIndex;
+
+                                        println("Click! on Index " + index)
+
+                                        //change for text files
+                                        val fileName = textPaths[index]
+
+                                        currentText.set( File(fileName).readText())
+
+
+                                    }
+                                }
+                                catch(e:Exception) {
+                                }
+
+                            }
+                            textarea(currentText) {
+                                bind(currentText)
+                                prefWidth = 600.0
+                                prefHeight = 650.0
+
+                                isEditable = false
+
+
+
+                            }
+                        }
+                    }
                     }
                 }
             }
             }
 
     }
-        }
+
 
 
 

@@ -13,6 +13,8 @@ class AssetsExtractor(projectDirectory: File?) {
     var imageList = mutableListOf<String>()
     var imageNames = mutableListOf<String>()
 
+    var textList = mutableListOf<String>()
+
     val imageTypes = AssetType("Images", mutableListOf("png","bmp","tif","tiff","tga","gif","jpg","jpeg","iff","pict","pic","pct","exr","hdr"))
     val audioTypes = AssetType("Audio", mutableListOf("ogg", "aif", "aiff", "flac", "wav", "mp3", "mod", "it", "s3m","xm"))
     val modelTypes = AssetType("Models", mutableListOf("fbx", "mb", "ma", "max", "jas", "dae", "dxf", "obj", "c4d", "blend", "lxo"))
@@ -22,7 +24,7 @@ class AssetsExtractor(projectDirectory: File?) {
         , "playable", "preset", "rendertexture", "shadervariants", "spriteatlas", "state", "statemachine", "texture2D", "transition", "webcamtexture", "brush", "terrainlayer"
         , "signal")
     )
-    val textTypes = AssetType("Text", mutableListOf("txt", "html", "htm", "xml", "json", "csv", "yaml", "bytes", "fnt", "manifest", "md", "js", "boo", "rsp","psd"))
+    val textTypes = AssetType("Text", mutableListOf("cs","txt", "html", "htm", "xml", "json", "csv", "yaml", "bytes", "fnt", "manifest", "md", "js", "boo", "rsp","psd"))
 
     val prefabType = AssetType("Prefabs", mutableListOf("prefab"))
 
@@ -53,7 +55,7 @@ class AssetsExtractor(projectDirectory: File?) {
                 {
                     AssignType(imageTypes,it.extension)
                     imageList.add(it.path)
-                    imageNames.add(it.name)
+                    //imageNames.add(it.name)
                 }
                 else if(audioTypes.types.contains((it.extension.toLowerCase())))
                 {
@@ -70,7 +72,7 @@ class AssetsExtractor(projectDirectory: File?) {
                 else if(textTypes.types.contains((it.extension.toLowerCase())))
                 {
                     AssignType(textTypes,it.extension)
-
+                    textList.add(it.path)
                 }
                 else if(prefabType.types.contains((it.extension.toLowerCase())))
                 {
