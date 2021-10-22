@@ -53,4 +53,16 @@ class MainController: Controller() {
     {
         return mainScanner.assets.assetInfo
     }
+    fun GetImageList():ObservableList<String>
+    {
+       val imageNames: ObservableList<String> = FXCollections.observableArrayList()
+
+        for(filePath in mainScanner.assets.imageList)
+        {
+            imageNames.add(filePath)
+        }
+
+        return imageNames
+    }
+
 }

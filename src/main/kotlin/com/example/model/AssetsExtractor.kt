@@ -6,13 +6,14 @@ class AssetsExtractor(projectDirectory: File?) {
 
     val assetDirectory = projectDirectory?.path + "/Assets"
 
-     var assetInfo:String = ""
+    var assetInfo:String = ""
 
     var  directoryCount:Int = 0
 
+    var imageList = mutableListOf<String>()
+    var imageNames = mutableListOf<String>()
 
-
-    val imageTypes = AssetType("Images", mutableListOf("png","bmp","tif","tiff","tga","gif","jpg","jpeg","psd","iff","pict","pic","pct","exr","hdr"))
+    val imageTypes = AssetType("Images", mutableListOf("png","bmp","tif","tiff","tga","gif","jpg","jpeg","iff","pict","pic","pct","exr","hdr"))
     val audioTypes = AssetType("Audio", mutableListOf("ogg", "aif", "aiff", "flac", "wav", "mp3", "mod", "it", "s3m","xm"))
     val modelTypes = AssetType("Models", mutableListOf("fbx", "mb", "ma", "max", "jas", "dae", "dxf", "obj", "c4d", "blend", "lxo"))
     val nativeTypes = AssetType("Unity Native", mutableListOf("anim", "animset", "asset", "blendtree", "buildreport", "colors", "controller", "cubemap"
@@ -21,7 +22,7 @@ class AssetsExtractor(projectDirectory: File?) {
         , "playable", "preset", "rendertexture", "shadervariants", "spriteatlas", "state", "statemachine", "texture2D", "transition", "webcamtexture", "brush", "terrainlayer"
         , "signal")
     )
-    val textTypes = AssetType("Text", mutableListOf("txt", "html", "htm", "xml", "json", "csv", "yaml", "bytes", "fnt", "manifest", "md", "js", "boo", "rsp"))
+    val textTypes = AssetType("Text", mutableListOf("txt", "html", "htm", "xml", "json", "csv", "yaml", "bytes", "fnt", "manifest", "md", "js", "boo", "rsp","psd"))
 
     val prefabType = AssetType("Prefabs", mutableListOf("prefab"))
 
@@ -51,6 +52,8 @@ class AssetsExtractor(projectDirectory: File?) {
                 if(imageTypes.types.contains(it.extension.toLowerCase()))
                 {
                     AssignType(imageTypes,it.extension)
+                    imageList.add(it.path)
+                    imageNames.add(it.name)
                 }
                 else if(audioTypes.types.contains((it.extension.toLowerCase())))
                 {

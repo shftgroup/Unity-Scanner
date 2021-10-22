@@ -10,7 +10,7 @@ class MyApp: App(MainView::class, Styles::class)
         with(stage)
         {
             width = 1500.0
-            height = 600.0
+            height = 700.0
         }
 
         super.start(stage)

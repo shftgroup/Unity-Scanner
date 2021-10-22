@@ -3,19 +3,21 @@ package com.example.view
 import com.example.Styles
 import com.example.controller.MainController
 import com.example.model.PackageManifest
+import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import javafx.event.EventHandler
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.TabPane
+import javafx.scene.image.Image
+import javafx.scene.input.KeyEvent
 import tornadofx.*
-import java.io.File
-import java.lang.Exception
-import javax.json.JsonObject
-import javax.swing.plaf.synth.Region
+import java.io.FileInputStream
+
+
+
 
 
 class MainView : View("Unity Scanner Version 0.1") {
@@ -43,8 +45,13 @@ class MainView : View("Unity Scanner Version 0.1") {
 
     var assetInfo = SimpleStringProperty()
 
-    //now ready to populate UI
-    //var jpk = PackageManifest()
+    var imageList:ObservableList<String> = FXCollections.observableArrayList()
+    var imagePaths = mutableListOf<String>()
+    var currentImage = SimpleObjectProperty<Image>()
+
+
+
+
 
 
     //var scenesInBuild = SimpleListProperty<String>()
@@ -113,6 +120,12 @@ class MainView : View("Unity Scanner Version 0.1") {
                             packageNames.add(singlePackage.name)
                         }
 
+                        for(imageName in controller.GetImageList())
+                        {
+                            imageList.add(imageName.substringAfterLast('\\'))
+                            imagePaths.add(imageName)
+                        }
+
                     }
                 }
                 item("Save")
@@ -125,7 +138,6 @@ class MainView : View("Unity Scanner Version 0.1") {
                         packageNamesList.add("animation")
                         packageNamesList.add("2d")
 */
-
 
 
                     }
@@ -303,18 +315,72 @@ class MainView : View("Unity Scanner Version 0.1") {
 
                 }
             tab("Assets") {
+                tabpane {
+                    tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
 
-                hbox {
-                    textarea(assetInfo)
+                    tab("Asset Summary")
                     {
-                        bind(assetInfo)
-                        addClass(Styles.textArea)
-                        isEditable = false
+
+                        hbox {
+                            textarea(assetInfo)
+                            {
+                                bind(assetInfo)
+                                addClass(Styles.textArea)
+                                isEditable = false
+
+                            }
+
+
+                        }
+                    }
+                    tab("Images")
+                    {
+                        hbox {
+                            listview(values = imageList)
+                            {
+                                addClass(Styles.textArea)
+
+                               prefWidth = 600.0
+
+                                try {
+                                    setOnMouseClicked() {
+                                        val index = this.selectionModel.selectedIndex;
+
+                                        println("Click! on Index " + index)
+
+
+                                        val fileStream = FileInputStream(imagePaths[index])
+                                        val image = Image(fileStream)
+                                        currentImage.set(image)
+
+
+                                    }
+                                }
+                                catch(e:Exception) {
+                                }
+
+                            }
+                            imageview(currentImage)
+                            {
+
+
+                                fitHeight = 600.0
+                                fitWidth = 600.0
+
+                                setPreserveRatio(true)
+
+                                //setImage(image)
+
+
+                            }
+                        }
+                    }
+                    tab("Text")
+                    {
 
                     }
                 }
             }
-
             }
 
     }
