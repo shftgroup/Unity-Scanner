@@ -7,18 +7,19 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import javafx.geometry.HPos
 import javafx.geometry.Pos
+import javafx.scene.Node
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.TabPane
 import javafx.scene.image.Image
-import javafx.scene.input.KeyEvent
+import javafx.scene.media.AudioClip
+import javafx.scene.text.TextAlignment
 import tornadofx.*
 import java.io.File
 import java.io.FileInputStream
-
-
-
+import javax.swing.GroupLayout
 
 
 class MainView : View("Unity Scanner Version 0.1") {
@@ -54,7 +55,13 @@ class MainView : View("Unity Scanner Version 0.1") {
     var currentText = SimpleStringProperty()
     var textPaths = mutableListOf<String>()
 
+    var scriptList:ObservableList<String> = FXCollections.observableArrayList()
+    var scriptPaths = mutableListOf<String>()
+    var currentScript = SimpleStringProperty()
 
+    var audioList:ObservableList<String> = FXCollections.observableArrayList()
+    var audioPaths = mutableListOf<String>()
+    lateinit var audioClip: AudioClip
 
     //var scenesInBuild = SimpleListProperty<String>()
 
@@ -132,7 +139,16 @@ class MainView : View("Unity Scanner Version 0.1") {
                             textList.add(text.substringAfterLast('/').substringAfterLast('\\'))
                             textPaths.add(text)
                         }
-
+                        for(sound in controller.mainScanner.assets.audioList)
+                        {
+                            audioList.add(sound.substringAfterLast('/').substringAfterLast('\\'))
+                            audioPaths.add(sound)
+                        }
+                        for(script in controller.mainScanner.assets.scriptList)
+                        {
+                            scriptList.add(script.substringAfterLast('/').substringAfterLast('\\'))
+                            scriptPaths.add(script)
+                        }
 
                     }
                 }
@@ -350,6 +366,7 @@ class MainView : View("Unity Scanner Version 0.1") {
                             {
                                 addClass(Styles.textArea)
 
+
                                prefWidth = 600.0
 
                                 try {
@@ -362,6 +379,9 @@ class MainView : View("Unity Scanner Version 0.1") {
                                         val fileStream = FileInputStream(imagePaths[index])
                                         val image = Image(fileStream)
                                         currentImage.set(image)
+
+
+
 
 
                                     }
@@ -419,12 +439,104 @@ class MainView : View("Unity Scanner Version 0.1") {
 
                                 isEditable = false
 
+                               // val soundMyNoise = AudioClip(File("C:\\Users\\jsj59\\Desktop\\Moss Giant Attack_V1.wav").toURI().toString())
+                               // soundMyNoise.play()
 
 
                             }
                         }
                     }
+                    tab("Audio")
+                    {
+                        hbox {
+                            listview(values = audioList)
+                            {
+                                addClass(Styles.textArea)
+
+                                prefWidth = 600.0
+
+                                try {
+                                    setOnMouseClicked() {
+                                        val index = this.selectionModel.selectedIndex;
+
+                                        println("Click! on Index " + index)
+
+                                        audioClip = AudioClip(File(audioPaths[index]).toURI().toString())
+                                        audioClip.play()
+
+
+                                    }
+                                }
+                                catch(e:Exception) {
+                                }
+
+                            }
+
+                            hbox {
+
+                                        button("Stop Sound")
+                                        {
+                                            hboxConstraints {
+                                                marginTop = 225.0
+                                                marginLeft = 400.0
+
+                                            }
+                                            style {
+                                                padding = box(20.px)
+
+
+                                            }
+                                            setOnAction {
+
+                                                audioClip.stop()
+                                            }
+                                        }
+                                    }
+
+
+                        }
                     }
+                    tab("Scripts")
+                    {
+                        hbox {
+                            listview(values = scriptList)
+                            {
+                                addClass(Styles.textArea)
+
+                                prefWidth = 600.0
+
+                                try {
+                                    setOnMouseClicked() {
+                                        val index = this.selectionModel.selectedIndex;
+
+                                        println("Click! on Index " + index)
+
+                                        //change for text files
+                                        val scriptName = scriptPaths[index]
+
+                                        currentScript.set( File(scriptName).readText())
+
+
+                                    }
+                                }
+                                catch(e:Exception) {
+                                }
+
+                            }
+                            textarea(currentScript) {
+                                bind(currentScript)
+                                prefWidth = 600.0
+                                prefHeight = 650.0
+
+                                isEditable = false
+
+
+
+                            }
+                        }
+                    }
+                }
+
                 }
             }
             }

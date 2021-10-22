@@ -11,9 +11,12 @@ class AssetsExtractor(projectDirectory: File?) {
     var  directoryCount:Int = 0
 
     var imageList = mutableListOf<String>()
-    var imageNames = mutableListOf<String>()
 
     var textList = mutableListOf<String>()
+
+    var audioList = mutableListOf<String>()
+
+    var scriptList = mutableListOf<String>()
 
     val imageTypes = AssetType("Images", mutableListOf("png","bmp","tif","tiff","tga","gif","jpg","jpeg","iff","pict","pic","pct","exr","hdr"))
     val audioTypes = AssetType("Audio", mutableListOf("ogg", "aif", "aiff", "flac", "wav", "mp3", "mod", "it", "s3m","xm"))
@@ -24,7 +27,7 @@ class AssetsExtractor(projectDirectory: File?) {
         , "playable", "preset", "rendertexture", "shadervariants", "spriteatlas", "state", "statemachine", "texture2D", "transition", "webcamtexture", "brush", "terrainlayer"
         , "signal")
     )
-    val textTypes = AssetType("Text", mutableListOf("cs","txt", "html", "htm", "xml", "json", "csv", "yaml", "bytes", "fnt", "manifest", "md", "js", "boo", "rsp","psd"))
+    val textTypes = AssetType("Text", mutableListOf("txt", "html", "htm", "xml", "json", "csv", "yaml", "bytes", "fnt", "manifest", "md", "js", "boo", "rsp","psd"))
 
     val prefabType = AssetType("Prefabs", mutableListOf("prefab"))
 
@@ -55,11 +58,12 @@ class AssetsExtractor(projectDirectory: File?) {
                 {
                     AssignType(imageTypes,it.extension)
                     imageList.add(it.path)
-                    //imageNames.add(it.name)
+
                 }
                 else if(audioTypes.types.contains((it.extension.toLowerCase())))
                 {
                     AssignType(audioTypes,it.extension)
+                    audioList.add(it.path)
                 }
                 else if(modelTypes.types.contains((it.extension).toLowerCase()))
                 {
@@ -93,6 +97,7 @@ class AssetsExtractor(projectDirectory: File?) {
                 else if(scriptTypes.types.contains(it.extension.toLowerCase()))
                 {
                     AssignType(scriptTypes,it.extension)
+                    scriptList.add(it.path)
                 }
                 else if(vfxTypes.types.contains(it.extension.toLowerCase()))
                 {
