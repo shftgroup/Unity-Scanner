@@ -17,12 +17,14 @@ import javafx.scene.image.Image
 import javafx.scene.media.AudioClip
 import javafx.scene.text.TextAlignment
 import tornadofx.*
+import tornadofx.Stylesheet.Companion.mediaView
 import java.io.File
 import java.io.FileInputStream
+import java.net.SocketImpl
 import javax.swing.GroupLayout
 
 
-class MainView : View("Unity Scanner Version 0.1") {
+class MainView : View("Unity Scanner Version 0.5") {
 
 
 
@@ -63,6 +65,22 @@ class MainView : View("Unity Scanner Version 0.1") {
     var audioPaths = mutableListOf<String>()
     lateinit var audioClip: AudioClip
 
+    var nativeList:ObservableList<String> = FXCollections.observableArrayList()
+    var nativePaths = mutableListOf<String>()
+    var currentNativeItem = SimpleStringProperty()
+
+    var modelList:ObservableList<String> = FXCollections.observableArrayList()
+    var modelPaths = mutableListOf<String>()
+    var currentModel = SimpleStringProperty()
+
+    var prefabList:ObservableList<String> = FXCollections.observableArrayList()
+    var prefabPaths = mutableListOf<String>()
+    var currentPrefab = SimpleStringProperty()
+
+    var shaderList:ObservableList<String> = FXCollections.observableArrayList()
+    var shaderPaths = mutableListOf<String>()
+    var currentShader = SimpleStringProperty()
+
     //var scenesInBuild = SimpleListProperty<String>()
 
 
@@ -89,6 +107,9 @@ class MainView : View("Unity Scanner Version 0.1") {
                     setOnAction {
 
                         controller.OpenProject()
+
+                        ClearLists()
+
                         versionText.set("Unity Version: " + controller.ExtractVersionNumber())
                         projectName.set("Project Name: " + controller.GetProjectName())
 
@@ -148,6 +169,26 @@ class MainView : View("Unity Scanner Version 0.1") {
                         {
                             scriptList.add(script.substringAfterLast('/').substringAfterLast('\\'))
                             scriptPaths.add(script)
+                        }
+                        for(native in controller.mainScanner.assets.nativeList)
+                        {
+                            nativeList.add(native.substringAfterLast('/').substringAfterLast('\\'))
+                            nativePaths.add(native)
+                        }
+                        for(model in controller.mainScanner.assets.modelList)
+                        {
+                            modelList.add(model.substringAfterLast('/').substringAfterLast('\\'))
+                            modelPaths.add(model)
+                        }
+                        for(prefab in controller.mainScanner.assets.prefabList)
+                        {
+                            prefabList.add(prefab.substringAfterLast('/').substringAfterLast('\\'))
+                            prefabPaths.add(prefab)
+                        }
+                        for(shader in controller.mainScanner.assets.shaderList)
+                        {
+                            shaderList.add(shader.substringAfterLast('/').substringAfterLast('\\'))
+                            shaderPaths.add(shader)
                         }
 
                     }
@@ -535,13 +576,207 @@ class MainView : View("Unity Scanner Version 0.1") {
                             }
                         }
                     }
+                    tab("Unity Native Files")
+                    {
+                        hbox {
+                            listview(values = nativeList)
+                            {
+                                addClass(Styles.textArea)
+
+                                prefWidth = 600.0
+
+                                try {
+                                    setOnMouseClicked() {
+                                        val index = this.selectionModel.selectedIndex;
+
+                                        println("Click! on Index " + index)
+
+                                        //change for text files
+                                        val fileName = nativePaths[index]
+
+                                        currentNativeItem.set( File(fileName).readText())
+
+
+                                    }
+                                }
+                                catch(e:Exception) {
+                                }
+
+                            }
+                            textarea(currentNativeItem) {
+                                bind(currentNativeItem)
+                                prefWidth = 600.0
+                                prefHeight = 650.0
+
+                                isEditable = false
+
+
+                            }
+
+                        }
+                }
+                  /*  tab("Models")
+                    {
+                        hbox {
+                            listview(values = modelList)
+                            {
+                                addClass(Styles.textArea)
+
+                                prefWidth = 600.0
+
+                                try {
+                                    setOnMouseClicked() {
+                                        val index = this.selectionModel.selectedIndex;
+
+                                        println("Click! on Index " + index)
+
+                                        //change for text files
+                                        val fileName = modelPaths[index]
+
+                                        currentModel.set( File(fileName).readText())
+
+
+                                    }
+                                }
+                                catch(e:Exception) {
+                                }
+
+                            }
+                            textarea(currentModel) {
+                                bind(currentModel)
+                                prefWidth = 600.0
+                                prefHeight = 650.0
+
+                                isEditable = false
+
+
+                            }
+
+                        }
+                    }
+                    */
+                    tab("Prefabs")
+                    {
+                        hbox {
+                            listview(values = prefabList)
+                            {
+                                addClass(Styles.textArea)
+
+                                prefWidth = 600.0
+
+                                try {
+                                    setOnMouseClicked() {
+                                        val index = this.selectionModel.selectedIndex;
+
+                                        println("Click! on Index " + index)
+
+                                        //change for text files
+                                        val fileName = prefabPaths[index]
+
+                                        currentPrefab.set( File(fileName).readText())
+
+
+                                    }
+                                }
+                                catch(e:Exception) {
+                                }
+
+                            }
+                            textarea(currentPrefab) {
+                                bind(currentPrefab)
+                                prefWidth = 600.0
+                                prefHeight = 650.0
+
+                                isEditable = false
+
+
+                            }
+
+                        }
+                    }
+                    tab("Shaders")
+                    {
+                        hbox {
+                            listview(values = shaderList)
+                            {
+                                addClass(Styles.textArea)
+
+                                prefWidth = 600.0
+
+                                try {
+                                    setOnMouseClicked() {
+                                        val index = this.selectionModel.selectedIndex;
+
+                                        println("Click! on Index " + index)
+
+                                        //change for text files
+                                        val fileName = shaderPaths[index]
+
+                                        currentShader.set( File(fileName).readText())
+
+
+                                    }
+                                }
+                                catch(e:Exception) {
+                                }
+
+                            }
+                            textarea(currentShader) {
+                                bind(currentShader)
+                                prefWidth = 600.0
+                                prefHeight = 650.0
+
+                                isEditable = false
+
+
+                            }
+
+                        }
+                    }
                 }
 
-                }
             }
             }
 
     }
+
+    fun  ClearLists()
+    {
+        projectPackages.clear()
+
+
+        packageNames.clear()
+
+        imageList.clear()
+        imagePaths.clear()
+
+
+        textList.clear()
+
+        textPaths.clear()
+
+        scriptList.clear()
+        scriptPaths.clear()
+
+
+        audioList.clear()
+        audioPaths.clear()
+
+        nativeList.clear()
+        nativePaths.clear()
+        modelList.clear()
+        modelPaths.clear()
+
+        prefabList.clear()
+        prefabPaths.clear()
+
+        shaderList.clear()
+        shaderPaths.clear()
+
+    }
+
+}
+
 
 
 

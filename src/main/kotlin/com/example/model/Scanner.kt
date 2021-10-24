@@ -1,4 +1,5 @@
 package com.example.model
+import com.example.view.MainView
 import tornadofx.*
 import java.io.File
 import java.util.*
@@ -26,6 +27,9 @@ class Scanner {
 
     fun OpenProject() {
         directory = chooseDirectory()
+
+
+
         editorVersion = ExtractVersionNumber()
         settingsExtractor = ProjectSettingsExtractor(directory)
         settingsExtractor.ExtractSettings()

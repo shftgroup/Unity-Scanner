@@ -18,6 +18,14 @@ class AssetsExtractor(projectDirectory: File?) {
 
     var scriptList = mutableListOf<String>()
 
+    var nativeList = mutableListOf<String>()
+
+    var modelList = mutableListOf<String>()
+
+    var prefabList = mutableListOf<String>()
+
+    var shaderList = mutableListOf<String>()
+
     val imageTypes = AssetType("Images", mutableListOf("png","bmp","tif","tiff","tga","gif","jpg","jpeg","iff","pict","pic","pct","exr","hdr"))
     val audioTypes = AssetType("Audio", mutableListOf("ogg", "aif", "aiff", "flac", "wav", "mp3", "mod", "it", "s3m","xm"))
     val modelTypes = AssetType("Models", mutableListOf("fbx", "mb", "ma", "max", "jas", "dae", "dxf", "obj", "c4d", "blend", "lxo"))
@@ -68,10 +76,12 @@ class AssetsExtractor(projectDirectory: File?) {
                 else if(modelTypes.types.contains((it.extension).toLowerCase()))
                 {
                     AssignType(modelTypes,it.extension)
+                    modelList.add(it.path)
                 }
                 else if(nativeTypes.types.contains((it.extension.toLowerCase())))
                 {
                     AssignType(nativeTypes,it.extension)
+                    nativeList.add(it.path)
                 }
                 else if(textTypes.types.contains((it.extension.toLowerCase())))
                 {
@@ -81,6 +91,7 @@ class AssetsExtractor(projectDirectory: File?) {
                 else if(prefabType.types.contains((it.extension.toLowerCase())))
                 {
                     AssignType(prefabType,it.extension)
+                    prefabList.add(it.path)
                 }
                 else if(pluginTypes.types.contains((it.extension.toLowerCase())))
                 {
@@ -106,6 +117,7 @@ class AssetsExtractor(projectDirectory: File?) {
                 else if(shaderTypes.types.contains(it.extension.toLowerCase()))
                 {
                     AssignType(shaderTypes,it.extension)
+                    shaderList.add(it.path)
                 }
                 else
                 {
