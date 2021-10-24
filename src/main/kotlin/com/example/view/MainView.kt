@@ -7,21 +7,19 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import javafx.geometry.HPos
 import javafx.geometry.Pos
-import javafx.scene.Node
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.TabPane
 import javafx.scene.image.Image
 import javafx.scene.media.AudioClip
-import javafx.scene.text.TextAlignment
 import tornadofx.*
-import tornadofx.Stylesheet.Companion.mediaView
+import java.awt.Font
+import java.awt.TextArea
 import java.io.File
 import java.io.FileInputStream
-import java.net.SocketImpl
-import javax.swing.GroupLayout
+import java.net.URL
+import kotlin.properties.ObservableProperty
 
 
 class MainView : View("Unity Scanner Version 0.5") {
@@ -81,13 +79,32 @@ class MainView : View("Unity Scanner Version 0.5") {
     var shaderPaths = mutableListOf<String>()
     var currentShader = SimpleStringProperty()
 
+    var vfxList:ObservableList<String> = FXCollections.observableArrayList()
+    var vfxPaths = mutableListOf<String>()
+    var currentVfx = SimpleStringProperty()
+
+    var fontList:ObservableList<String> = FXCollections.observableArrayList()
+    var fontPaths = mutableListOf<String>()
+    //lateinit var currentFont:javafx.scene.text.Font
+    //var currentFont = SimpleObjectProperty<javafx.scene.text.Font>()
+    var currentFont = javafx.scene.text.Font.getDefault()
+
+    var fontText = SimpleStringProperty()
+
     //var scenesInBuild = SimpleListProperty<String>()
 
+    var TA = javafx.scene.control.TextArea()
+    lateinit var TA2:javafx.scene.control.TextArea
 
     override val root = vbox {
         alignment = Pos.TOP_LEFT
 
         scenesInBuild.set("Scenes in Build: 0")
+
+
+        TA.font = javafx.scene.text.Font.getDefault()
+       // currentFont.set(javafx.scene.text.Font.getDefault())
+
 ////////////////////////////////
       //  val file = File("C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache/com.unity.mathematics@1.1.0/package.json")
 
@@ -190,8 +207,18 @@ class MainView : View("Unity Scanner Version 0.5") {
                             shaderList.add(shader.substringAfterLast('/').substringAfterLast('\\'))
                             shaderPaths.add(shader)
                         }
-
+                        for(vfx in controller.mainScanner.assets.vfxList)
+                        {
+                            vfxList.add(vfx.substringAfterLast('/').substringAfterLast('\\'))
+                            vfxPaths.add(vfx)
+                        }
+                        for(font in controller.mainScanner.assets.fontList)
+                        {
+                            fontList.add(font.substringAfterLast('/').substringAfterLast('\\'))
+                            fontPaths.add(font)
+                        }
                     }
+
                 }
                 item("Save")
                 {
@@ -733,6 +760,108 @@ class MainView : View("Unity Scanner Version 0.5") {
 
                         }
                     }
+                    tab("VFX")
+                    {
+                        hbox {
+                            listview(values = vfxList)
+                            {
+                                addClass(Styles.textArea)
+
+                                prefWidth = 600.0
+
+                                try {
+                                    setOnMouseClicked() {
+                                        val index = this.selectionModel.selectedIndex;
+
+                                        println("Click! on Index " + index)
+
+                                        //change for text files
+                                        val fileName = vfxPaths[index]
+
+                                        currentVfx.set( File(fileName).readText())
+
+
+                                    }
+                                }
+                                catch(e:Exception) {
+                                }
+
+                            }
+                            textarea(currentVfx) {
+                                bind(currentVfx)
+                                prefWidth = 600.0
+                                prefHeight = 650.0
+
+                                isEditable = false
+
+
+                            }
+
+                        }
+                    }
+                    tab("Fonts")
+                    {
+                        hbox {
+                            listview(values = fontList)
+                            {
+                                addClass(Styles.textArea)
+
+                                prefWidth = 600.0
+
+                                try {
+                                    setOnMouseClicked() {
+                                        val index = this.selectionModel.selectedIndex;
+
+                                        println("Click! on Index " + index)
+
+                                        val fonts = File(fontPaths[index])
+                                        val fontFile = FileInputStream(fonts)
+
+                                        currentFont = javafx.scene.text.Font.loadFont(fontFile,24.0)
+                                       // currentFont = javafx.scene.text.Font.loadFont(fontPaths[index],24.0)
+
+                                        if(currentFont != null) {
+                                            TA2.font = currentFont
+
+                                        }
+                                        else
+                                        {
+                                            println("Current Font is NUll")
+                                        }
+                                        println(fontPaths[index])
+                                        fontText.set("")
+                                        TA2.font = currentFont
+
+                                        //TA2.font = loadFont(fontPaths[index],24 )
+                                        fontText.set("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+                                       // TA2.isEditable = true
+
+
+                                    }
+                                }
+                                catch(e:Exception) {
+                                }
+
+                            }
+
+
+                         TA2= textarea(fontText) {
+                                bind(fontText)
+                                prefWidth = 600.0
+                                prefHeight = 650.0
+
+
+
+
+
+                                isEditable = false
+
+
+                            }
+
+
+                        }
+                    }
                 }
 
             }
@@ -774,6 +903,12 @@ class MainView : View("Unity Scanner Version 0.5") {
         shaderPaths.clear()
 
     }
+
+
+
+
+
+
 
 }
 

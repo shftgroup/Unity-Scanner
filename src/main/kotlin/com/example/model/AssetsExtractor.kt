@@ -26,6 +26,10 @@ class AssetsExtractor(projectDirectory: File?) {
 
     var shaderList = mutableListOf<String>()
 
+    var vfxList = mutableListOf<String>()
+
+    var fontList = mutableListOf<String>()
+
     val imageTypes = AssetType("Images", mutableListOf("png","bmp","tif","tiff","tga","gif","jpg","jpeg","iff","pict","pic","pct","exr","hdr"))
     val audioTypes = AssetType("Audio", mutableListOf("ogg", "aif", "aiff", "flac", "wav", "mp3", "mod", "it", "s3m","xm"))
     val modelTypes = AssetType("Models", mutableListOf("fbx", "mb", "ma", "max", "jas", "dae", "dxf", "obj", "c4d", "blend", "lxo"))
@@ -33,7 +37,7 @@ class AssetsExtractor(projectDirectory: File?) {
         , "curves", "curvesnormalized", "flare", "fontsettings", "giparams", "gradients", "guiskin", "ht", "mask", "mat", "mesh"
         , "mixer", "overridecontroller", "particlecurves", "particlecurvessigned", "particledoublecurves", "particledoublecurvessigned", "physicmaterial", "physicsmaterial2D"
         , "playable", "preset", "rendertexture", "shadervariants", "spriteatlas", "state", "statemachine", "texture2D", "transition", "webcamtexture", "brush", "terrainlayer"
-        , "signal")
+        , "signal","physicsmaterial2d")
     )
     val textTypes = AssetType("Text", mutableListOf("txt", "html", "htm", "xml", "json", "csv", "yaml", "bytes", "fnt", "manifest", "md", "js", "boo", "rsp","psd"))
 
@@ -100,6 +104,7 @@ class AssetsExtractor(projectDirectory: File?) {
                 else if(fontTypes.types.contains(it.extension.toLowerCase()))
                 {
                     AssignType(fontTypes,it.extension)
+                    fontList.add(it.path)
                 }
                 else if(videoTypes.types.contains(it.extension.toLowerCase()))
                 {
@@ -113,6 +118,7 @@ class AssetsExtractor(projectDirectory: File?) {
                 else if(vfxTypes.types.contains(it.extension.toLowerCase()))
                 {
                     AssignType(vfxTypes,it.extension)
+                    vfxList.add(it.path)
                 }
                 else if(shaderTypes.types.contains(it.extension.toLowerCase()))
                 {
