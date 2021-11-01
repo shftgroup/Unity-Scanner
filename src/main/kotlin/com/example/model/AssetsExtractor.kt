@@ -142,7 +142,7 @@ class AssetsExtractor(projectDirectory: File?) {
         assetInfo += "Folders in Assets Directory: " + directoryCount + '\n'
 
 
-        assetInfo += "\nImage Files In Project:\n"
+        assetInfo += "\n     Image Files In Project:\n"
         AddToResultsString(imageTypes)
 
 
@@ -198,14 +198,14 @@ class AssetsExtractor(projectDirectory: File?) {
         var amountPrinted = 0;
 
         if(currentType.typeTotal == 0)
-            assetInfo += "None"
+            assetInfo += "     None"
 
         for(i in 0..currentType.types.count()-1)
         {
             if(currentType.counts[i] == 0)
                 continue
 
-            assetInfo += currentType.types[i] + ": " + currentType.counts[i] + "   "
+            assetInfo += "     " + currentType.types[i] + ": " + currentType.counts[i] + "   "
             amountPrinted++
 
             if(amountPrinted == GetTotalDifferentTypes(currentType))

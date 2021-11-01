@@ -13,13 +13,10 @@ import javafx.scene.control.ButtonBar
 import javafx.scene.control.TabPane
 import javafx.scene.image.Image
 import javafx.scene.media.AudioClip
+import javafx.stage.FileChooser
 import tornadofx.*
-import java.awt.Font
-import java.awt.TextArea
 import java.io.File
 import java.io.FileInputStream
-import java.net.URL
-import kotlin.properties.ObservableProperty
 
 
 class MainView : View("Unity Scanner Version 0.5") {
@@ -86,15 +83,12 @@ class MainView : View("Unity Scanner Version 0.5") {
 
     var fontList:ObservableList<String> = FXCollections.observableArrayList()
     var fontPaths = mutableListOf<String>()
-    //lateinit var currentFont:javafx.scene.text.Font
-    //var currentFont = SimpleObjectProperty<javafx.scene.text.Font>()
     var currentFont = javafx.scene.text.Font.getDefault()
-
     var fontText = SimpleStringProperty("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
-    var currentFont2Property = SimpleObjectProperty<javafx.scene.text.Font>()
+    var reportText = SimpleStringProperty()
 
-    //var scenesInBuild = SimpleListProperty<String>()
+    var projectOpen = false;
 
     var TA = javafx.scene.control.TextArea()
     lateinit var TA2:javafx.scene.control.Label
@@ -106,7 +100,7 @@ class MainView : View("Unity Scanner Version 0.5") {
 
 
         TA.font = javafx.scene.text.Font.getDefault()
-       // currentFont.set(javafx.scene.text.Font.getDefault())
+
 
 
 
@@ -117,9 +111,12 @@ class MainView : View("Unity Scanner Version 0.5") {
                 {
                     setOnAction {
 
+                        ClearLists()
+                        reportText.set("")
+
                         controller.OpenProject()
 
-                        ClearLists()
+
 
                         versionText.set("Unity Version: " + controller.ExtractVersionNumber())
                         projectName.set("Project Name: " + controller.GetProjectName())
@@ -155,6 +152,8 @@ class MainView : View("Unity Scanner Version 0.5") {
                         projectPackages = controller?.GetPackages()
 
                         assetInfo.set(controller.GetAssetInfo())
+
+                        reportText.set(controller.mainScanner.report)
 
                         for(singlePackage in projectPackages)
                         {
@@ -211,6 +210,8 @@ class MainView : View("Unity Scanner Version 0.5") {
                             fontList.add(font.substringAfterLast('/').substringAfterLast('\\'))
                             fontPaths.add(font)
                         }
+
+                        projectOpen = true;
                     }
 
                 }
@@ -218,6 +219,49 @@ class MainView : View("Unity Scanner Version 0.5") {
                 {
                     setOnAction {
 
+                        if(projectOpen == true) {
+
+                            val fc = FileChooser()
+                            fc.extensionFilters.addAll(FileChooser.ExtensionFilter("Text Files", "*.txt"))
+                            fc.initialDirectory = controller.mainScanner.directory
+                            val fileName = fc.showSaveDialog(currentStage)
+
+                            if(fileName != null) {
+/*
+                            val fileName2 = chooseFile(
+                                "Save Project Report",
+                                arrayOf(FileChooser.ExtensionFilter("All Files", listOf("*.*"))),
+                                controller.mainScanner.directory,
+                                FileChooserMode.Save,
+                                null
+                            ) { }
+*/
+                                print(fileName)
+
+                                fileName.writeText(controller.mainScanner.report, Charsets.UTF_8)
+/*
+                                if (fileName.exists()) {
+                                    fileName.writeText(controller.mainScanner.report, Charsets.UTF_8)
+                                } else {
+                                    fileName.createNewFile()
+                                    fileName.writeText(controller.mainScanner.report, Charsets.UTF_8)
+                                }*/
+                            }
+                        }
+                        else
+                        {
+                            alert(
+                                type = Alert.AlertType.ERROR,
+                                header = "No Project Open",
+                                content = "You need to open a project first!",
+                                actionFn = {
+                                        btnType ->
+                                    if (btnType.buttonData == ButtonBar.ButtonData.OK_DONE) {
+
+                                    }
+                                }
+                            )
+                        }
 
                     }
 
@@ -898,6 +942,19 @@ class MainView : View("Unity Scanner Version 0.5") {
                         }
                     }
                 }
+            }
+            tab("Report")
+            {
+                textarea {
+                    addClass(Styles.heading)
+
+                    isEditable = true
+
+                    bind(reportText)
+
+
+                }
+
 
             }
             }

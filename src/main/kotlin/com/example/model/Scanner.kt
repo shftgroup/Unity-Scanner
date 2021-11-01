@@ -23,27 +23,38 @@ class Scanner {
 
     lateinit var assetInfo:String
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    lateinit var report:String
 
     fun OpenProject() {
+        report = ""
+
         directory = chooseDirectory()
+        if(directory != null) {
+
+            //check for version number here and perform appropriate logic
+
+           //
 
 
 
-        editorVersion = ExtractVersionNumber()
-        settingsExtractor = ProjectSettingsExtractor(directory)
-        settingsExtractor.ExtractSettings()
-        PopulateSettingsValues()
 
-        sceneExtractor = SceneExtractor(directory)
-        scenesInBuild =  sceneExtractor.ExtractScenesInBuild()
-        totalScenesinAssetFolder = sceneExtractor.ExtractAllScenesFromAssets()
+            editorVersion = ExtractVersionNumber()
+            settingsExtractor = ProjectSettingsExtractor(directory)
+            settingsExtractor.ExtractSettings()
+            PopulateSettingsValues()
 
-        packageList = PackageManifest(directory)
-        packageList.LoadManifest()
+            sceneExtractor = SceneExtractor(directory)
+            scenesInBuild = sceneExtractor.ExtractScenesInBuild()
+            totalScenesinAssetFolder = sceneExtractor.ExtractAllScenesFromAssets()
 
-        assets = AssetsExtractor(directory)
-        assets.ScanAssetFolder()
+            packageList = PackageManifest(directory)
+            packageList.LoadManifest()
+
+            assets = AssetsExtractor(directory)
+            assets.ScanAssetFolder()
+
+            CreateReport()
+        }
       //  assetInfo = assets.as
     }
 
@@ -63,6 +74,95 @@ class Scanner {
     fun PopulateSettingsValues() {
 
         projectName = settingsExtractor.projectName
+
+    }
+
+    fun CreateReport()
+    {
+        report = ""
+
+        report += "Project Name: " + projectName + "\n"
+        report += "Unity Version: " +editorVersion +"\n"
+
+
+        report += "Directory: " + directory!!.path + "\n"
+
+        report += "\nScene List:\n"
+
+        for(scene in totalScenesinAssetFolder)
+        {
+            report += "     $scene\n"
+        }
+
+        report += "\nScenes In Build:\n"
+        for(scene in scenesInBuild)
+        {
+            report += "     $scene\n"
+        }
+
+        report += "\nPackages:\n"
+        for(packageName in packageList.packageList)
+        {
+            report += "     $packageName\n"
+        }
+
+        report += "\nAsset Breakdown:\n"
+        report += "     ${assets.assetInfo}\n"
+
+        report += "\nAsset List: \n"
+
+        report += "\nImage List: \n"
+        for(imageName in assets.imageList)
+        {
+           report += "     $imageName\n"
+
+        }
+        report += "\nText List: \n"
+        for(text in assets.textList)
+        {
+            report += "     $text\n"
+        }
+        report += "\nAudio List: \n"
+        for(sound in assets.audioList)
+        {
+            report += "     $sound\n"
+        }
+        report += "\nScript List: \n"
+        for(script in assets.scriptList)
+        {
+            report += "     $script\n"
+        }
+        report += "\nNative File List: \n"
+        for(native in assets.nativeList)
+        {
+            report += "     $native\n"
+        }
+        report += "\nModel List: \n"
+        for(model in assets.modelList)
+        {
+            report += "     $model\n"
+        }
+        report += "\nPrefab List: \n"
+        for(prefab in assets.prefabList)
+        {
+            report += "     $prefab\n"
+        }
+        report += "\nShader List: \n"
+        for(shader in assets.shaderList)
+        {
+            report += "     $shader\n"
+        }
+        report += "\nVFX List: \n"
+        for(vfx in assets.vfxList)
+        {
+            report += "     $vfx\n"
+        }
+        report += "\nFont List: \n"
+        for(font in assets.fontList)
+        {
+            report += "     $font\n"
+        }
+
 
     }
 
