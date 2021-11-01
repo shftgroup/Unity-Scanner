@@ -90,12 +90,14 @@ class MainView : View("Unity Scanner Version 0.5") {
     //var currentFont = SimpleObjectProperty<javafx.scene.text.Font>()
     var currentFont = javafx.scene.text.Font.getDefault()
 
-    var fontText = SimpleStringProperty()
+    var fontText = SimpleStringProperty("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+    var currentFont2Property = SimpleObjectProperty<javafx.scene.text.Font>()
 
     //var scenesInBuild = SimpleListProperty<String>()
 
     var TA = javafx.scene.control.TextArea()
-    lateinit var TA2:javafx.scene.control.TextArea
+    lateinit var TA2:javafx.scene.control.Label
 
     override val root = vbox {
         alignment = Pos.TOP_LEFT
@@ -106,16 +108,7 @@ class MainView : View("Unity Scanner Version 0.5") {
         TA.font = javafx.scene.text.Font.getDefault()
        // currentFont.set(javafx.scene.text.Font.getDefault())
 
-////////////////////////////////
-      //  val file = File("C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache/com.unity.mathematics@1.1.0/package.json")
 
-     //  val pm = PackageManifest()
-     //   pm.LoadManifest("None")
-        //this code needs to move down to the open project menu item
-
-
-        //val jsonFile = File("C:/Users/jsj59/Documents/GitHub/Dungeon-Escape/Library/PackageCache/com.unity.mathematics@1.1.0").readText()
-//////////////////////////////////////////////
 
 
         menubar {
@@ -224,13 +217,6 @@ class MainView : View("Unity Scanner Version 0.5") {
                 item("Save")
                 {
                     setOnAction {
-
-                    /*
-                       packageNamesList.add("Cinemachine")
-                        packageNamesList.add("math")
-                        packageNamesList.add("animation")
-                        packageNamesList.add("2d")
-*/
 
 
                     }
@@ -858,25 +844,21 @@ class MainView : View("Unity Scanner Version 0.5") {
                                         val fonts = File(fontPaths[index])
                                         val fontFile = FileInputStream(fonts)
 
-                                        currentFont = javafx.scene.text.Font.loadFont(fontFile,24.0)
-                                       // currentFont = javafx.scene.text.Font.loadFont(fontPaths[index],24.0)
+                                       currentFont =  javafx.scene.text.Font.loadFont(fontFile,24.0)
 
                                         if(currentFont != null) {
-                                            TA2.font = currentFont
+
+
+                                            TA2.fontProperty().set( currentFont)
+
+                                            println(fontPaths[index])
+                                            fontText.set("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
                                         }
                                         else
                                         {
                                             println("Current Font is NUll")
                                         }
-                                        println(fontPaths[index])
-                                        fontText.set("")
-                                        TA2.font = currentFont
-
-                                        //TA2.font = loadFont(fontPaths[index],24 )
-                                        fontText.set("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
-                                       // TA2.isEditable = true
-
 
                                     }
                                 }
@@ -885,21 +867,33 @@ class MainView : View("Unity Scanner Version 0.5") {
 
                             }
 
+                            hbox {
+                                hboxConstraints {
+                                   // marginTop = 175.0
+                                    marginLeft = 50.0
 
-                         TA2= textarea(fontText) {
-                                bind(fontText)
-                                prefWidth = 1200.0
-                                prefHeight = 650.0
+                                }
 
-
-
-
-
-                                isEditable = false
+                                style {
+                                    padding = box(20.px)
 
 
+                                }
+
+                                TA2 = label(fontText) {
+
+                                    bind(fontText)
+                                    prefWidth = 1200.0
+                                    prefHeight = 650.0
+
+                                    font = javafx.scene.text.Font.getDefault()
+
+
+                                    //isEditable = false
+
+
+                                }
                             }
-
 
                         }
                     }
@@ -942,6 +936,9 @@ class MainView : View("Unity Scanner Version 0.5") {
 
         shaderList.clear()
         shaderPaths.clear()
+
+        fontList.clear()
+        fontPaths.clear()
 
     }
 
