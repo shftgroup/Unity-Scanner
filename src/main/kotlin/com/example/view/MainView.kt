@@ -50,6 +50,7 @@ class MainView : View("Unity Scanner Version 0.5") {
     var imageList:ObservableList<String> = FXCollections.observableArrayList()
     var imagePaths = mutableListOf<String>()
     var currentImage = SimpleObjectProperty<Image>()
+    var currentImageInfo = SimpleStringProperty()
 
     var textList:ObservableList<String> = FXCollections.observableArrayList()
     var currentText = SimpleStringProperty()
@@ -436,6 +437,7 @@ class MainView : View("Unity Scanner Version 0.5") {
 
 
                                prefWidth = 600.0
+                                prefHeight = 600.0
 
                                 try {
                                     setOnMouseClicked() {
@@ -448,9 +450,12 @@ class MainView : View("Unity Scanner Version 0.5") {
                                         val image = Image(fileStream)
                                         currentImage.set(image)
 
+                                        currentImageInfo.set("")
+
+                                        val imageInfo = "Image Size: " + image.width + " X " + image.height +"\n" + "Path: " + imagePaths[index]
 
 
-
+                                        currentImageInfo.set(imageInfo)
 
                                     }
                                 }
@@ -458,18 +463,34 @@ class MainView : View("Unity Scanner Version 0.5") {
                                 }
 
                             }
-                            imageview(currentImage)
-                            {
+                            vbox {
+                                imageview(currentImage)
+                                {
 
 
-                                fitHeight = 600.0
-                                fitWidth = 600.0
+                                    fitHeight = 600.0
+                                    fitWidth = 600.0
 
-                                setPreserveRatio(true)
+                                    setPreserveRatio(true)
 
-                                //setImage(image)
+                                    //setImage(image)
 
 
+                                }
+                                textarea()
+                                {
+
+                                    isEditable = false
+
+
+                                    prefWidth = 1200.0
+                                    prefHeight = 200.0
+
+                                    addClass(Styles.heading)
+
+                                    bind(currentImageInfo)
+
+                                }
                             }
                         }
                     }
@@ -501,8 +522,10 @@ class MainView : View("Unity Scanner Version 0.5") {
 
                             }
                             textarea(currentText) {
+
+
                                 bind(currentText)
-                                prefWidth = 600.0
+                                prefWidth = 1200.0
                                 prefHeight = 650.0
 
                                 isEditable = false
@@ -530,7 +553,7 @@ class MainView : View("Unity Scanner Version 0.5") {
                                         println("Click! on Index " + index)
 
                                         audioClip = AudioClip(File(audioPaths[index]).toURI().toString())
-                                        audioClip.play()
+                                       // audioClip.play()
 
 
                                     }
@@ -542,7 +565,7 @@ class MainView : View("Unity Scanner Version 0.5") {
 
                             hbox {
 
-                                        button("Stop Sound")
+                                        button("Play Sound")
                                         {
                                             hboxConstraints {
                                                 marginTop = 225.0
@@ -556,9 +579,27 @@ class MainView : View("Unity Scanner Version 0.5") {
                                             }
                                             setOnAction {
 
+                                                audioClip.play()
+                                            }
+                                        }
+                                        button("Stop Sound")
+                                        {
+                                            hboxConstraints {
+                                                marginTop = 225.0
+                                                marginLeft = 100.0
+
+                                            }
+                                            style {
+                                                padding = box(20.px)
+
+
+                                            }
+                                            setOnAction {
+
                                                 audioClip.stop()
                                             }
                                         }
+
                                     }
 
 
@@ -593,8 +634,8 @@ class MainView : View("Unity Scanner Version 0.5") {
                             }
                             textarea(currentScript) {
                                 bind(currentScript)
-                                prefWidth = 600.0
-                                prefHeight = 650.0
+                                prefWidth = 1200.0
+                                prefHeight = 600.0
 
                                 isEditable = false
 
@@ -632,7 +673,7 @@ class MainView : View("Unity Scanner Version 0.5") {
                             }
                             textarea(currentNativeItem) {
                                 bind(currentNativeItem)
-                                prefWidth = 600.0
+                                prefWidth = 1200.0
                                 prefHeight = 650.0
 
                                 isEditable = false
@@ -711,7 +752,7 @@ class MainView : View("Unity Scanner Version 0.5") {
                             }
                             textarea(currentPrefab) {
                                 bind(currentPrefab)
-                                prefWidth = 600.0
+                                prefWidth = 1200.0
                                 prefHeight = 650.0
 
                                 isEditable = false
@@ -750,7 +791,7 @@ class MainView : View("Unity Scanner Version 0.5") {
                             }
                             textarea(currentShader) {
                                 bind(currentShader)
-                                prefWidth = 600.0
+                                prefWidth = 1200.0
                                 prefHeight = 650.0
 
                                 isEditable = false
@@ -789,7 +830,7 @@ class MainView : View("Unity Scanner Version 0.5") {
                             }
                             textarea(currentVfx) {
                                 bind(currentVfx)
-                                prefWidth = 600.0
+                                prefWidth = 1200.0
                                 prefHeight = 650.0
 
                                 isEditable = false
@@ -847,7 +888,7 @@ class MainView : View("Unity Scanner Version 0.5") {
 
                          TA2= textarea(fontText) {
                                 bind(fontText)
-                                prefWidth = 600.0
+                                prefWidth = 1200.0
                                 prefHeight = 650.0
 
 
