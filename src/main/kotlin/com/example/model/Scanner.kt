@@ -10,20 +10,20 @@ class Scanner {
     ///Properties and constants
     var directory: File? = null
 
-    lateinit var settingsExtractor: ProjectSettingsExtractor
-    lateinit var sceneExtractor:SceneExtractor
-    lateinit var packageList:PackageManifest
-    lateinit var assets:AssetsExtractor
+    var settingsExtractor = ProjectSettingsExtractor(File(""))
+    var sceneExtractor = SceneExtractor(File(""))
+    var packageList = PackageManifest(File(""))
+    var assets = AssetsExtractor(File(""))
 
 
-    lateinit var editorVersion: String
-    lateinit var projectName: String
-    lateinit var scenesInBuild: List<String>
-    lateinit var totalScenesinAssetFolder: List<String>
+    var editorVersion = String()
+    var projectName =  String()
+    var scenesInBuild = listOf<String>()
+    var totalScenesinAssetFolder = listOf<String>()
 
-    lateinit var assetInfo:String
+    var assetInfo = String()
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    lateinit var report:String
+    var report = String()
 
     fun OpenProject() {
         report = ""
@@ -34,26 +34,33 @@ class Scanner {
             //check for version number here and perform appropriate logic
 
            //
+            //need to check if we are in a valid directory
 
+            val assetFolderName = directory.toString() + "/assets"
 
+            if(File(assetFolderName).exists()) {
 
+                editorVersion = ExtractVersionNumber()
+                settingsExtractor = ProjectSettingsExtractor(directory)
+                settingsExtractor.ExtractSettings()
+                PopulateSettingsValues()
 
-            editorVersion = ExtractVersionNumber()
-            settingsExtractor = ProjectSettingsExtractor(directory)
-            settingsExtractor.ExtractSettings()
-            PopulateSettingsValues()
+                sceneExtractor = SceneExtractor(directory)
+                scenesInBuild = sceneExtractor.ExtractScenesInBuild()
+                totalScenesinAssetFolder = sceneExtractor.ExtractAllScenesFromAssets()
 
-            sceneExtractor = SceneExtractor(directory)
-            scenesInBuild = sceneExtractor.ExtractScenesInBuild()
-            totalScenesinAssetFolder = sceneExtractor.ExtractAllScenesFromAssets()
+                packageList = PackageManifest(directory)
+                packageList.LoadManifest()
 
-            packageList = PackageManifest(directory)
-            packageList.LoadManifest()
+                assets = AssetsExtractor(directory)
+                assets.ScanAssetFolder()
 
-            assets = AssetsExtractor(directory)
-            assets.ScanAssetFolder()
-
-            CreateReport()
+                CreateReport()
+            }
+            else
+            {
+                print("Cannot Locate Assets, This appears to not be a unity root directory")
+            }
         }
       //  assetInfo = assets.as
     }
@@ -61,12 +68,21 @@ class Scanner {
     //This will find the version number.  Will need to be modified to search for file
     //and remove hardcoded path
     fun ExtractVersionNumber(): String {
+        //look here first for modern unity, then go to Library/proje
         val file = File(directory.toString() + "/ProjectSettings/ProjectVersion.txt")
-        var content: String = file.readText()
 
-        editorVersion = content.split("\n")[0].substringAfter(" ")
+       if(file.exists()) {
+           var content: String = file.readText()
 
-        return editorVersion
+           editorVersion = content.split("\n")[0].substringAfter(" ")
+
+           return editorVersion
+       }
+        else
+       {
+
+            return "Unknown Editor Version (Early) "
+       }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 

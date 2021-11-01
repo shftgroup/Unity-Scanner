@@ -582,6 +582,10 @@ class MainView : View("Unity Scanner Version 0.5") {
 
                                         println("Click! on Index " + index)
 
+                                        //need to stop all playing sounds before starting a new one
+                                        //load a defualt sound in the beginning
+                                        //then stop it here
+
                                         audioClip = AudioClip(File(audioPaths[index]).toURI().toString())
                                        // audioClip.play()
 

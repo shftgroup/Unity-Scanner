@@ -21,6 +21,11 @@ class ProjectSettingsExtractor(projectDirectory:File?) {
     //methods that extract individual settings
     fun ExtractProjectName():String
     {
+        projectName = "Unknown - Early Unity Version"
+
+
+        //here we need to deal with if the name is not showing up properly
+
         for(line in fileLines)
         {
             val r = Regex("productName:")
@@ -42,8 +47,19 @@ class ProjectSettingsExtractor(projectDirectory:File?) {
     // File IO operations for settings file
     // need to change this from hardcoded pathname
     fun ReadFileAsLinesUsingReadLines(fileName: String): List<String>
-            = File(directory.toString() + "/ProjectSettings/ProjectSettings.ASSET").readLines()
+    {
+        val projectSettingsFileName = directory.toString() + "/ProjectSettings/ProjectSettings.ASSET"
 
+        if(File(projectSettingsFileName).exists()) {
+            return File(directory.toString() + "/ProjectSettings/ProjectSettings.ASSET").readLines()
+        }
+        else
+        {
+            print("project settings not found")
+            return listOf("Empty")
+        }
+
+    }
     fun FileProjectSettingsFile(projectDirectory: File?):String
     {
         return ""
