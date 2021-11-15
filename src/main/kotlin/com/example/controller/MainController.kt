@@ -3,6 +3,7 @@ package com.example.controller
 import com.example.main
 import com.example.model.PackageManifest
 import com.example.model.Scanner
+import com.example.view.MainView
 import javafx.beans.property.SimpleListProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
@@ -48,4 +49,23 @@ class MainController: Controller() {
         return packageNamesList
 
     }
+
+    fun GetAssetInfo():String
+    {
+        return mainScanner.assets.assetInfo
+    }
+    fun GetImageList():ObservableList<String>
+    {
+       val imageNames: ObservableList<String> = FXCollections.observableArrayList()
+
+        for(filePath in mainScanner.assets.imageList)
+        {
+            imageNames.add(filePath)
+        }
+
+        return imageNames
+    }
+
+
+
 }

@@ -71,8 +71,8 @@ class SceneExtractor(projectDirectory: File?) {
             }
         }
 
-        println("Total Scenes in assets folder: " + scenesInAssetFolder.toString())
-        println(returnList)
+       // println("Total Scenes in assets folder: " + scenesInAssetFolder.toString())
+      //  println(returnList)
 
         return returnList
 
@@ -84,7 +84,22 @@ class SceneExtractor(projectDirectory: File?) {
     // File IO operations for build settings file
     // need to change this from hardcoded pathname
     fun ReadFileAsLinesUsingReadLines(fileName: String): List<String>
-            = File(directory.toString() + "/ProjectSettings/EditorBuildSettings.ASSET").readLines()
+    {
+       // if( File(directory.toString() + "/ProjectSettings/EditorBuildSettings.ASSET").readLines()
 
 
+        val projectSettingsFilename = directory.toString() + "/ProjectSettings/EditorBuildSettings.ASSET"
+
+        if(File(projectSettingsFilename).exists())
+        {
+            return File(projectSettingsFilename).readLines()
+            print("Found project settings file")
+        }
+        else
+        {
+           // print("project settings not found")
+            return listOf("Empty")
+        }
+
+    }
 }

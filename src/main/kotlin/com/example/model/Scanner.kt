@@ -1,4 +1,5 @@
 package com.example.model
+import com.example.view.MainView
 import tornadofx.*
 import java.io.File
 import java.util.*
@@ -9,46 +10,87 @@ class Scanner {
     ///Properties and constants
     var directory: File? = null
 
-    lateinit var settingsExtractor: ProjectSettingsExtractor
-    lateinit var sceneExtractor:SceneExtractor
-    lateinit var packageList:PackageManifest
+    var settingsExtractor = ProjectSettingsExtractor(File(""))
+    var sceneExtractor = SceneExtractor(File(""))
+    var packageList = PackageManifest(File(""))
+    var assets = AssetsExtractor(File(""))
 
 
-    lateinit var editorVersion: String
-    lateinit var projectName: String
-    lateinit var scenesInBuild: List<String>
-    lateinit var totalScenesinAssetFolder: List<String>
+    var editorVersion = String()
+    var projectName =  String()
+    var scenesInBuild = listOf<String>()
+    var totalScenesinAssetFolder = listOf<String>()
 
-
+    var assetInfo = String()
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    var report = String()
 
     fun OpenProject() {
+        report = ""
+
+
+
+
         directory = chooseDirectory()
-        editorVersion = ExtractVersionNumber()
-        settingsExtractor = ProjectSettingsExtractor(directory)
-        settingsExtractor.ExtractSettings()
-        PopulateSettingsValues()
+        if(directory != null) {
 
-        sceneExtractor = SceneExtractor(directory)
-        scenesInBuild =  sceneExtractor.ExtractScenesInBuild()
-        totalScenesinAssetFolder = sceneExtractor.ExtractAllScenesFromAssets()
+            //check for version number here and perform appropriate logic
 
-        packageList = PackageManifest(directory)
-        packageList.LoadManifest()
+           //
+            //need to check if we are in a valid directory
 
+            val assetFolderName = directory.toString() + "/assets"
 
+            if(File(assetFolderName).exists()) {
+
+                editorVersion = ExtractVersionNumber()
+                settingsExtractor = ProjectSettingsExtractor(directory)
+                settingsExtractor.ExtractSettings()
+                PopulateSettingsValues()
+
+                sceneExtractor = SceneExtractor(directory)
+                scenesInBuild = sceneExtractor.ExtractScenesInBuild()
+                totalScenesinAssetFolder = sceneExtractor.ExtractAllScenesFromAssets()
+
+                packageList = PackageManifest(directory)
+                packageList.LoadManifest()
+
+                assets = AssetsExtractor(directory)
+                assets.ScanAssetFolder()
+
+                CreateReport()
+            }
+            else
+            {
+                print("Cannot Locate Assets, This appears to not be a unity root directory")
+            }
+        }
+      //  assetInfo = assets.as
     }
 
     //This will find the version number.  Will need to be modified to search for file
     //and remove hardcoded path
     fun ExtractVersionNumber(): String {
+        //look here first for modern unity, then go to Library/proje
         val file = File(directory.toString() + "/ProjectSettings/ProjectVersion.txt")
-        var content: String = file.readText()
 
-        editorVersion = content.split("\n")[0].substringAfter(" ")
+        //start by assuming a modern unity version so check for projectVersion.txt
+       if(file.exists()) {
+           var content: String = file.readText()
 
-        return editorVersion
+           editorVersion = content.split("\n")[0].substringAfter(" ")
+
+           return editorVersion
+       }
+        else //most likely an older version - check Library/EditorBuildSettings.asset
+       {
+            val editorBuildSettingsFile = File(directory.toString() + "/Library/EditorUserBuildSettings.asset")
+            editorVersion = OldVersions.FindEditorVersion(editorBuildSettingsFile)
+
+           println(editorVersion)
+
+            return editorVersion
+       }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,6 +98,95 @@ class Scanner {
     fun PopulateSettingsValues() {
 
         projectName = settingsExtractor.projectName
+
+    }
+
+    fun CreateReport()
+    {
+        report = ""
+
+        report += "Project Name: " + projectName + "\n"
+        report += "Unity Version: " +editorVersion +"\n"
+
+
+        report += "Directory: " + directory!!.path + "\n"
+
+        report += "\nScene List:\n"
+
+        for(scene in totalScenesinAssetFolder)
+        {
+            report += "     $scene\n"
+        }
+
+        report += "\nScenes In Build:\n"
+        for(scene in scenesInBuild)
+        {
+            report += "     $scene\n"
+        }
+
+        report += "\nPackages:\n"
+        for(packageName in packageList.packageList)
+        {
+            report += "     $packageName\n"
+        }
+
+        report += "\nAsset Breakdown:\n"
+        report += "     ${assets.assetInfo}\n"
+
+        report += "\nAsset List: \n"
+
+        report += "\nImage List: \n"
+        for(imageName in assets.imageList)
+        {
+           report += "     $imageName\n"
+
+        }
+        report += "\nText List: \n"
+        for(text in assets.textList)
+        {
+            report += "     $text\n"
+        }
+        report += "\nAudio List: \n"
+        for(sound in assets.audioList)
+        {
+            report += "     $sound\n"
+        }
+        report += "\nScript List: \n"
+        for(script in assets.scriptList)
+        {
+            report += "     $script\n"
+        }
+        report += "\nNative File List: \n"
+        for(native in assets.nativeList)
+        {
+            report += "     $native\n"
+        }
+        report += "\nModel List: \n"
+        for(model in assets.modelList)
+        {
+            report += "     $model\n"
+        }
+        report += "\nPrefab List: \n"
+        for(prefab in assets.prefabList)
+        {
+            report += "     $prefab\n"
+        }
+        report += "\nShader List: \n"
+        for(shader in assets.shaderList)
+        {
+            report += "     $shader\n"
+        }
+        report += "\nVFX List: \n"
+        for(vfx in assets.vfxList)
+        {
+            report += "     $vfx\n"
+        }
+        report += "\nFont List: \n"
+        for(font in assets.fontList)
+        {
+            report += "     $font\n"
+        }
+
 
     }
 

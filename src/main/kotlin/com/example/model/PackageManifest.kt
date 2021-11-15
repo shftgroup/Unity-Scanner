@@ -84,15 +84,23 @@ class PackageManifest(projectDirectory:File? ) {
 
     fun FindPackageFiles()
         {
-            File(packageDirectory).walkTopDown().forEach {
-                if (it.name == "package.json") {
-                   //println(it)
-                    packageList.add(it.path)
+            if(File(packageDirectory).exists())
+            {
+                File(packageDirectory).walkTopDown().forEach {
+                    if (it.name == "package.json") {
+                        //println(it)
+                        packageList.add(it.path)
+                    }
+                    //print(packageList)
                 }
-                //print(packageList)
             }
+            else
+            {
+                print("Package Manager is Not Present")
 
-    }
+            }
+        }
+
 
 
 
