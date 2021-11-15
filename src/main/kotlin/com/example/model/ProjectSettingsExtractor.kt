@@ -33,7 +33,7 @@ class ProjectSettingsExtractor(projectDirectory:File?) {
             {
                 // println(line)
                 projectName = line.substringAfter(":")
-                println(projectName)
+              //  println(projectName)
             }
         }
         return projectName
@@ -58,7 +58,7 @@ class ProjectSettingsExtractor(projectDirectory:File?) {
             print("project settings not found")
             return listOf("Empty")
         }
-
+        //EditorBuildSettings.asset
     }
     fun FileProjectSettingsFile(projectDirectory: File?):String
     {

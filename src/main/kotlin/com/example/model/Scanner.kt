@@ -28,6 +28,9 @@ class Scanner {
     fun OpenProject() {
         report = ""
 
+
+
+
         directory = chooseDirectory()
         if(directory != null) {
 
@@ -71,6 +74,7 @@ class Scanner {
         //look here first for modern unity, then go to Library/proje
         val file = File(directory.toString() + "/ProjectSettings/ProjectVersion.txt")
 
+        //start by assuming a modern unity version so check for projectVersion.txt
        if(file.exists()) {
            var content: String = file.readText()
 
@@ -78,10 +82,14 @@ class Scanner {
 
            return editorVersion
        }
-        else
+        else //most likely an older version - check Library/EditorBuildSettings.asset
        {
+            val editorBuildSettingsFile = File(directory.toString() + "/Library/EditorUserBuildSettings.asset")
+            editorVersion = OldVersions.FindEditorVersion(editorBuildSettingsFile)
 
-            return "Unknown Editor Version (Early) "
+           println(editorVersion)
+
+            return editorVersion
        }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////

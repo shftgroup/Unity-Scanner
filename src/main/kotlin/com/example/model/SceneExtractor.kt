@@ -97,7 +97,7 @@ class SceneExtractor(projectDirectory: File?) {
         }
         else
         {
-            print("project settings not found")
+           // print("project settings not found")
             return listOf("Empty")
         }
 
