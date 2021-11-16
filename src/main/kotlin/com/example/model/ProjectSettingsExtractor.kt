@@ -9,6 +9,9 @@ class ProjectSettingsExtractor(projectDirectory:File?) {
     val directory = projectDirectory
     val fileLines = ReadFileAsLinesUsingReadLines("") //this will need to change to search for file
     lateinit var projectName:String
+
+    var oldVersion = false
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //will extract all settings by calling appropriate method
@@ -26,15 +29,21 @@ class ProjectSettingsExtractor(projectDirectory:File?) {
 
         //here we need to deal with if the name is not showing up properly
 
-        for(line in fileLines)
+        if(oldVersion == false)
         {
-            val r = Regex("productName:")
-            if(r.containsMatchIn(line))
-            {
-                // println(line)
-                projectName = line.substringAfter(":")
-              //  println(projectName)
+            for (line in fileLines) {
+                val r = Regex("productName:")
+                if (r.containsMatchIn(line)) {
+                    // println(line)
+                    projectName = line.substringAfter(":")
+                    //  println(projectName)
+                }
             }
+        }
+        else
+        {
+            val projectSettingsFileName = File(directory.toString() + "/Library/ProjectSettings.asset")
+            projectName = OldVersions.ExtractProjectName(projectSettingsFileName)
         }
         return projectName
     }
@@ -55,7 +64,8 @@ class ProjectSettingsExtractor(projectDirectory:File?) {
         }
         else
         {
-            print("project settings not found")
+           // print("project settings not found")
+            oldVersion = true
             return listOf("Empty")
         }
         //EditorBuildSettings.asset

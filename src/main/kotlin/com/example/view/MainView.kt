@@ -102,39 +102,7 @@ class MainView : View("Unity Scanner Version 0.5") {
 
         TA.font = javafx.scene.text.Font.getDefault()
 //
-        val file = File("C:/Users/Public/Documents/Unity Projects/AngryBots/Library/ProjectSettings.Asset")
-        var bytes:ByteArray = file.readBytes()
-        var counter = 0
-        var firstTextFound = false
-        var secondTextSearch = false
 
-       // println(String(bytes, Charsets.UTF_16LE))
-   /*     for(byte in bytes)
-        {   if(firstTextFound == false) {
-            if (byte.toInt() >= 65 && byte.toInt() <= 122)
-            {
-                firstTextFound = true
-            }
-            else {
-                if(byte.toInt() == 0)
-                {
-                    secondTextSearch = true
-                }
-            }
-            if (byte.toInt() == 0)
-                println()
-
-        }
-        }*/
-       /*for(i in 0..bytes.count()-1)
-        {
-            print(bytes[i].toChar())
-            if(bytes[i].toInt() == 13)
-                println()
-        }
-        println(" " + bytes[68] + " " + bytes [69])*/
-        //C:\Users\Public\Documents\Unity Projects\AngryBots\Library
-        //cr = 13
 
         menubar {
             menu("File") {

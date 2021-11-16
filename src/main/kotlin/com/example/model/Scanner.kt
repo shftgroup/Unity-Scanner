@@ -87,7 +87,7 @@ class Scanner {
             val editorBuildSettingsFile = File(directory.toString() + "/Library/EditorUserBuildSettings.asset")
             editorVersion = OldVersions.FindEditorVersion(editorBuildSettingsFile)
 
-           println(editorVersion)
+           //println(editorVersion)
 
             return editorVersion
        }

@@ -13,8 +13,9 @@ class SceneExtractor(projectDirectory: File?) {
     var scenesInBuild = 0
     var scenesInAssetFolder = 0
 
+    var oldVersion = false
 
-
+    val oldVersionFileName = directory.toString() + "/Library/EditorBuildSettings.asset"
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -23,31 +24,34 @@ class SceneExtractor(projectDirectory: File?) {
     {
         var returnList = listOf<String>()
 
-
-        for(line in fileLines)
+        if(oldVersion == false)
         {
-            val r = Regex("path")
+            for (line in fileLines) {
+                val r = Regex("path")
 
-            var sceneName = String()
+                var sceneName = String()
 
-            if(r.containsMatchIn(line))
-            {
+                if (r.containsMatchIn(line)) {
 
 
-                // println(line)
-                //sceneName = line.substringAfter("Levels/").substringBefore(".")
+                    // println(line)
+                    //sceneName = line.substringAfter("Levels/").substringBefore(".")
 
-                sceneName = line.substringAfterLast("/").substringBefore(".")
+                    sceneName = line.substringAfterLast("/").substringBefore(".")
 
-                if(sceneName.contains(Regex("path"))){
-                    continue
-                }
-                else
-                {
-                    returnList += sceneName
-                    scenesInBuild += 1
+                    if (sceneName.contains(Regex("path"))) {
+                        continue
+                    } else {
+                        returnList += sceneName
+                        scenesInBuild += 1
+                    }
                 }
             }
+        }
+        else
+        {
+            val editorBuildScenesFile = File(oldVersionFileName)
+            returnList = OldVersions.ExtractScenesInBuild(editorBuildScenesFile)
         }
         //println("Total Scenes in build:" + scenesInBuild)
         //println(returnList)
@@ -93,12 +97,12 @@ class SceneExtractor(projectDirectory: File?) {
         if(File(projectSettingsFilename).exists())
         {
             return File(projectSettingsFilename).readLines()
-            print("Found project settings file")
+            //print("Found project settings file")
         }
         else
         {
-           // print("project settings not found")
-            return listOf("Empty")
+            oldVersion = true
+            return listOf()
         }
 
     }

@@ -30,16 +30,16 @@ class AssetsExtractor(projectDirectory: File?) {
 
     var fontList = mutableListOf<String>()
 
-    val imageTypes = AssetType("Images", mutableListOf("png","bmp","tif","tiff","tga","gif","jpg","jpeg","iff","pict","pic","pct","exr","hdr"))
+    val imageTypes = AssetType("Images", mutableListOf("png","bmp","tif","tiff","tga","gif","jpg","jpeg","iff","pict","pic","pct","exr","hdr","psd"))
     val audioTypes = AssetType("Audio", mutableListOf("ogg", "aif", "aiff", "flac", "wav", "mp3", "mod", "it", "s3m","xm"))
     val modelTypes = AssetType("Models", mutableListOf("fbx", "mb", "ma", "max", "jas", "dae", "dxf", "obj", "c4d", "blend", "lxo"))
     val nativeTypes = AssetType("Unity Native", mutableListOf("anim", "animset", "asset", "blendtree", "buildreport", "colors", "controller", "cubemap"
         , "curves", "curvesnormalized", "flare", "fontsettings", "giparams", "gradients", "guiskin", "ht", "mask", "mat", "mesh"
         , "mixer", "overridecontroller", "particlecurves", "particlecurvessigned", "particledoublecurves", "particledoublecurvessigned", "physicmaterial", "physicsmaterial2D"
         , "playable", "preset", "rendertexture", "shadervariants", "spriteatlas", "state", "statemachine", "texture2D", "transition", "webcamtexture", "brush", "terrainlayer"
-        , "signal","physicsmaterial2d")
+        , "signal","physicsmaterial2d","unity")
     )
-    val textTypes = AssetType("Text", mutableListOf("txt", "html", "htm", "xml", "json", "csv", "yaml", "bytes", "fnt", "manifest", "md", "js", "boo", "rsp","psd"))
+    val textTypes = AssetType("Text", mutableListOf("txt", "html", "htm", "xml", "json", "csv", "yaml", "bytes", "fnt", "manifest", "md", "boo", "rsp"))
 
     val prefabType = AssetType("Prefabs", mutableListOf("prefab"))
 
@@ -51,7 +51,7 @@ class AssetsExtractor(projectDirectory: File?) {
 
     val videoTypes = AssetType("Video", mutableListOf("avi", "asf", "wmv", "mov", "dv", "mp4", "m4v", "mpg", "mpeg", "ogv", "vp8", "webm"))
 
-    val scriptTypes = AssetType("Scripts", mutableListOf("cs"))
+    val scriptTypes = AssetType("Scripts", mutableListOf("cs","js"))
 
     val vfxTypes = AssetType("Visual Effects", mutableListOf("vfx", "vfxoperator", "vfxblock"))
 

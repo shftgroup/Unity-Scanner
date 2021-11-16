@@ -20,7 +20,7 @@ object OldVersions {
            // if(c in '0'..'9' || c in 'a'..'z')
             if(c == '.' && bytes[i-1].toChar() in '0'..'9' )
             {
-                print(bytes[i].toChar())
+               // print(bytes[i].toChar())
                 text += bytes[i-1].toChar()
                 text += c
                 text += bytes[i+1].toChar()
@@ -30,18 +30,60 @@ object OldVersions {
             }
 
         }
-        //46-122 Ascii
-       // println(text)
 
-        //println(text)
-
-      //  val pattern = "[0..9].[0..9].[0..9]".toRegex()
-
-       // val version = pattern.find(text)
-         //   println("\n" + version)
 
         return text
     }
 
+    fun ExtractScenesInBuild(buildSettingsFile: File):List<String>
+    {
+        val bytes = buildSettingsFile.readBytes()
 
+        var text = String()
+
+        for(i in 0..bytes.count()-1)
+        {
+            val c = bytes[i].toChar()
+                text += c
+        }
+
+        val pattern = "Assets/(.+)unity".toRegex()
+
+        val scenes = pattern.findAll(text).map{it.value}.toList()
+
+        if(scenes.count() != 0)
+        {
+        var sceneList = mutableListOf<String>()
+
+        sceneList = scenes[0].split(".unity").toMutableList()
+
+       // if(sceneList.count() > 1)
+            sceneList.removeAt(sceneList.count()-1)  //this trims the last element which is empty
+            return sceneList
+        }
+        else
+        {
+            return listOf()
+        }
+    }
+
+    fun ExtractProjectName(projectSettingsFile: File):String
+    {
+        val bytes = projectSettingsFile.readBytes()
+
+        var name = ""
+
+        for(byte in 68..bytes.count()-1) //68 is the byte offset where the project name should begin
+        {
+            val c = bytes[byte].toChar()
+
+            if(c.toInt() == 0 )
+                break;
+
+            name += c
+        }
+
+       // println("Name: " + name)
+        return name
+    }
 }
