@@ -37,53 +37,61 @@ object OldVersions {
 
     fun ExtractScenesInBuild(buildSettingsFile: File):List<String>
     {
-        val bytes = buildSettingsFile.readBytes()
+        if(buildSettingsFile.exists()) {
+            val bytes = buildSettingsFile.readBytes()
 
-        var text = String()
+            var text = String()
 
-        for(i in 0..bytes.count()-1)
-        {
-            val c = bytes[i].toChar()
+            for (i in 0..bytes.count() - 1) {
+                val c = bytes[i].toChar()
                 text += c
-        }
+            }
 
-        val pattern = "Assets/(.+)unity".toRegex()
+            val pattern = "Assets/(.+)unity".toRegex()
 
-        val scenes = pattern.findAll(text).map{it.value}.toList()
+            val scenes = pattern.findAll(text).map { it.value }.toList()
 
-        if(scenes.count() != 0)
-        {
-        var sceneList = mutableListOf<String>()
+            if (scenes.count() != 0) {
+                var sceneList = mutableListOf<String>()
 
-        sceneList = scenes[0].split(".unity").toMutableList()
+                sceneList = scenes[0].split(".unity").toMutableList()
 
-       // if(sceneList.count() > 1)
-            sceneList.removeAt(sceneList.count()-1)  //this trims the last element which is empty
-            return sceneList
+                // if(sceneList.count() > 1)
+                sceneList.removeAt(sceneList.count() - 1)  //this trims the last element which is empty
+                return sceneList
+            } else {
+                return listOf()
+            }
         }
         else
         {
-            return listOf()
+            return listOf("Can't Find Scenes")
         }
     }
 
     fun ExtractProjectName(projectSettingsFile: File):String
     {
-        val bytes = projectSettingsFile.readBytes()
+        if(projectSettingsFile.exists()) {
+            val bytes = projectSettingsFile.readBytes()
 
-        var name = ""
+            var name = ""
 
-        for(byte in 68..bytes.count()-1) //68 is the byte offset where the project name should begin
-        {
-            val c = bytes[byte].toChar()
+            for (byte in 68..bytes.count() - 1) //68 is the byte offset where the project name should begin
+            {
+                val c = bytes[byte].toChar()
 
-            if(c.toInt() == 0 )
-                break;
+                if (c.toInt() == 0)
+                    break;
 
-            name += c
+                name += c
+            }
+
+            // println("Name: " + name)
+            return name
         }
-
-       // println("Name: " + name)
-        return name
+        else
+        {
+            return "Can't Find Project Name"
+        }
     }
 }

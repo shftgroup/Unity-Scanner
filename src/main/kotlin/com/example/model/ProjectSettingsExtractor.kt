@@ -24,7 +24,7 @@ class ProjectSettingsExtractor(projectDirectory:File?) {
     //methods that extract individual settings
     fun ExtractProjectName():String
     {
-        projectName = "Unknown - Early Unity Version"
+        projectName = "Unable To Locate Project Name"
 
 
         //here we need to deal with if the name is not showing up properly

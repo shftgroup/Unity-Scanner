@@ -85,9 +85,14 @@ class Scanner {
         else //most likely an older version - check Library/EditorBuildSettings.asset
        {
             val editorBuildSettingsFile = File(directory.toString() + "/Library/EditorUserBuildSettings.asset")
-            editorVersion = OldVersions.FindEditorVersion(editorBuildSettingsFile)
+           if(editorBuildSettingsFile.exists()) {
+               editorVersion = OldVersions.FindEditorVersion(editorBuildSettingsFile)
+           }
+           else
+           {
+               return "Unknown Version Number"
+           }
 
-           //println(editorVersion)
 
             return editorVersion
        }
