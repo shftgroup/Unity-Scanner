@@ -3,14 +3,18 @@ package com.example.model
 import java.io.File
 import java.nio.file.ReadOnlyFileSystemException
 
-class ProjectSettingsExtractor(projectDirectory:File?) {
+class ProjectSettingsExtractor(projectDirectory:File?, version:Int) {
 
     //properties and constants
     val directory = projectDirectory
     val fileLines = ReadFileAsLinesUsingReadLines("") //this will need to change to search for file
+    val editorVersion = version
+
     lateinit var projectName:String
 
     var oldVersion = false
+
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -28,9 +32,14 @@ class ProjectSettingsExtractor(projectDirectory:File?) {
 
 
         //here we need to deal with if the name is not showing up properly
-
+        // unity 5 needs to get from directory
+        // for unity 5 projects the project name will reflect the directory nmae
+        // project settings folder starts in unity 4
         if(oldVersion == false)
         {
+            if(editorVersion == 5)
+                return  directory.toString().substringAfterLast("\\")
+
             for (line in fileLines) {
                 val r = Regex("productName:")
                 if (r.containsMatchIn(line)) {
@@ -42,8 +51,10 @@ class ProjectSettingsExtractor(projectDirectory:File?) {
         }
         else
         {
-            val projectSettingsFileName = File(directory.toString() + "/Library/ProjectSettings.asset")
-            projectName = OldVersions.ExtractProjectName(projectSettingsFileName)
+
+                val projectSettingsFileName = File(directory.toString() + "/Library/ProjectSettings.asset")
+                projectName = OldVersions.ExtractProjectName(projectSettingsFileName)
+
         }
         return projectName
     }
@@ -57,6 +68,8 @@ class ProjectSettingsExtractor(projectDirectory:File?) {
     // need to change this from hardcoded pathname
     fun ReadFileAsLinesUsingReadLines(fileName: String): List<String>
     {
+
+
         val projectSettingsFileName = directory.toString() + "/ProjectSettings/ProjectSettings.ASSET"
 
         if(File(projectSettingsFileName).exists()) {

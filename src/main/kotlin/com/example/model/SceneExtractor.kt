@@ -4,11 +4,13 @@ import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import java.io.File
 
-class SceneExtractor(projectDirectory: File?) {
+class SceneExtractor(projectDirectory: File?, version:Int) {
 
     //properties and constants
     val directory = projectDirectory
     val fileLines = ReadFileAsLinesUsingReadLines("") //this will need to change to search for file
+
+    val editorVersion = version
 
     var scenesInBuild = 0
     var scenesInAssetFolder = 0
@@ -16,6 +18,7 @@ class SceneExtractor(projectDirectory: File?) {
     var oldVersion = false
 
     val oldVersionFileName = directory.toString() + "/Library/EditorBuildSettings.asset"
+    val unityVersion45FileName = directory.toString() + "/ProjectSettings/EditorBuildSettings.asset"
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,8 +53,17 @@ class SceneExtractor(projectDirectory: File?) {
         }
         else
         {
-            val editorBuildScenesFile = File(oldVersionFileName)
-            returnList = OldVersions.ExtractScenesInBuild(editorBuildScenesFile)
+            if(editorVersion <= 3) {
+                val editorBuildScenesFile = File(oldVersionFileName)
+                OldVersions.editorVersion = editorVersion
+                returnList = OldVersions.ExtractScenesInBuild(editorBuildScenesFile)
+            }
+            else
+            {
+                val editorBuildScenesFile = File(unityVersion45FileName)
+                OldVersions.editorVersion = editorVersion
+                returnList = OldVersions.ExtractScenesInBuild(editorBuildScenesFile)
+            }
         }
         //println("Total Scenes in build:" + scenesInBuild)
         //println(returnList)
@@ -90,7 +102,11 @@ class SceneExtractor(projectDirectory: File?) {
     fun ReadFileAsLinesUsingReadLines(fileName: String): List<String>
     {
        // if( File(directory.toString() + "/ProjectSettings/EditorBuildSettings.ASSET").readLines()
-
+        if(editorVersion <= 5)
+        {
+            oldVersion = true
+            return listOf()
+        }
 
         val projectSettingsFilename = directory.toString() + "/ProjectSettings/EditorBuildSettings.ASSET"
 

@@ -10,8 +10,8 @@ class Scanner {
     ///Properties and constants
     var directory: File? = null
 
-    var settingsExtractor = ProjectSettingsExtractor(File(""))
-    var sceneExtractor = SceneExtractor(File(""))
+    var settingsExtractor = ProjectSettingsExtractor(File(""),0)
+    var sceneExtractor = SceneExtractor(File(""),0)
     var packageList = PackageManifest(File(""))
     var assets = AssetsExtractor(File(""))
 
@@ -44,11 +44,16 @@ class Scanner {
             if(File(assetFolderName).exists()) {
 
                 editorVersion = ExtractVersionNumber()
-                settingsExtractor = ProjectSettingsExtractor(directory)
+
+                val version = editorVersion.substringBefore('.').toInt()
+                println("Version: " + version)
+                //get project name
+                //this needs to be refactored to set the name directly
+                settingsExtractor = ProjectSettingsExtractor(directory,version)
                 settingsExtractor.ExtractSettings()
                 PopulateSettingsValues()
 
-                sceneExtractor = SceneExtractor(directory)
+                sceneExtractor = SceneExtractor(directory,version)
                 scenesInBuild = sceneExtractor.ExtractScenesInBuild()
                 totalScenesinAssetFolder = sceneExtractor.ExtractAllScenesFromAssets()
 
