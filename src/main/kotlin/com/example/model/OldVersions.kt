@@ -57,7 +57,7 @@ object OldVersions {
                 var sceneList = mutableListOf<String>()
 
                 sceneList = scenes[0].split(".unity").toMutableList()
-                println(sceneList)
+                //println(sceneList)
                 // if(sceneList.count() > 1)
                 sceneList.removeAt(sceneList.count() - 1)  //this trims the last element which is empty
                 return sceneList

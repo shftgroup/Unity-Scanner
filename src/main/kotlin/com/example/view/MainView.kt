@@ -357,6 +357,8 @@ class MainView : View("Unity Scanner Version 0.5") {
             }
             tab("Packages") {
 
+
+
                 hbox{
 
                     try{
@@ -373,47 +375,61 @@ class MainView : View("Unity Scanner Version 0.5") {
                             println("Click! on Index " + index)
 
                             try{
+                                val v = controller.mainScanner.editorVersion.substringBefore('.').toInt()
+                                print("Version: " + v)
+                                if(v  <= 2017)
+                                {
+                                    println("OLD VERSION DETECTED")
+                                    currentPackageInfo.set("Package Manager is not availabe prior to Unity 2018")
 
-                                if(projectPackages.count() > 0){
+                                }
 
-                                 if(index >=0 && index < projectPackages.count()) {
-                                     packageDetails = projectPackages[index]
-                                    }
-                                    var detailsString = "Package Details:\n"
-
-                                    println(packageDetails.name)
-                                    detailsString += "Package Name: " + packageDetails.name + "\n"
-                                    detailsString += "Package Version: " + packageDetails.version + "\n"
-                                    detailsString += "Lowest Compatible Unity Version: " + packageDetails.unity + "\n"
-                                    detailsString += "Display name: " + packageDetails.displayName + "\n"
-                                    detailsString += "Package Details: " + packageDetails.description + "\n\n"
-
-                                    detailsString += "Source Code Repository Info:\n"
-
-                                    if(packageDetails.repository != null) {
-                                        detailsString += "VCS used: " + packageDetails.repository.type + "\n"
-                                        detailsString += "Repository URL: " + packageDetails.repository.url + "\n"
-                                        detailsString += "Repository Revision: " + packageDetails.repository.revision + "\n\n"
-                                    }
-                                    else{
-                                        detailsString += "None\n\n"
-                                    }
-
-                                    if(packageDetails.dependendies.count() > 0)
+                                    if(projectPackages.count() > 0)
                                     {
-                                        detailsString += "Dependencies:\n"
-                                        detailsString += packageDetails.dependendies.toString() + "\n\n"
 
-                                    }
-                                    else
+                                    if(index >=0 && index < projectPackages.count())
                                     {
-                                        detailsString += "No dependencies were listed for this package\n\n"
+                                        packageDetails = projectPackages[index]
+                                        }
+                                        var detailsString = "Package Details:\n"
+
+                                        println(packageDetails.name)
+                                        detailsString += "Package Name: " + packageDetails.name + "\n"
+                                        detailsString += "Package Version: " + packageDetails.version + "\n"
+                                        detailsString += "Lowest Compatible Unity Version: " + packageDetails.unity + "\n"
+                                        detailsString += "Display name: " + packageDetails.displayName + "\n"
+                                        detailsString += "Package Details: " + packageDetails.description + "\n\n"
+
+                                        detailsString += "Source Code Repository Info:\n"
+
+                                        if(packageDetails.repository != null) {
+                                            detailsString += "VCS used: " + packageDetails.repository.type + "\n"
+                                            detailsString += "Repository URL: " + packageDetails.repository.url + "\n"
+                                            detailsString += "Repository Revision: " + packageDetails.repository.revision + "\n\n"
+                                        }
+                                         else{
+                                            detailsString += "None\n\n"
+                                        }
+
+                                        if(packageDetails.dependendies.count() > 0)
+                                        {
+                                            detailsString += "Dependencies:\n"
+                                            detailsString += packageDetails.dependendies.toString() + "\n\n"
+
+                                        }
+                                        else
+                                        {
+                                         detailsString += "No dependencies were listed for this package\n\n"
+                                        }
+
+                                        detailsString += "Total Packages: " + projectPackages.count()
+
+                                        currentPackageInfo.set(detailsString)
                                     }
 
-                                    detailsString += "Total Packages: " + projectPackages.count()
 
-                                    currentPackageInfo.set(detailsString)
-                            }
+
+
                             }
                             catch(e:Exception)
                             {
@@ -432,6 +448,15 @@ class MainView : View("Unity Scanner Version 0.5") {
                         prefHeight = 650.0
                         //setMaxSize((prefWidth),(prefHeight))
                         bind(currentPackageInfo)
+
+                        val v = controller.mainScanner.editorVersion.substringBefore('.').toInt()
+                        print("Version: " + v)
+                        if(v  <= 2017)
+                        {
+                            println("OLD VERSION DETECTED")
+                            currentPackageInfo.set("Package Manager is not availabe prior to Unity 2018")
+
+                        }
 
                     }
                 }

@@ -46,7 +46,7 @@ class PackageManifest(projectDirectory:File? ) {
             //println(singlePackage)
 
             packages.add(singlePackage)
-            println(packages[0])
+            //println(packages[0])
         }
 
     }

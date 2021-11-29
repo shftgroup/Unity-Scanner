@@ -16,7 +16,7 @@ class Scanner {
     var assets = AssetsExtractor(File(""))
 
 
-    var editorVersion = String()
+    var editorVersion = "0"
     var projectName =  String()
     var scenesInBuild = listOf<String>()
     var totalScenesinAssetFolder = listOf<String>()
@@ -24,6 +24,8 @@ class Scanner {
     var assetInfo = String()
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     var report = String()
+
+    var packageManagerAvailable = true
 
     fun OpenProject() {
         report = ""
@@ -57,9 +59,14 @@ class Scanner {
                 scenesInBuild = sceneExtractor.ExtractScenesInBuild()
                 totalScenesinAssetFolder = sceneExtractor.ExtractAllScenesFromAssets()
 
-                packageList = PackageManifest(directory)
-                packageList.LoadManifest()
-
+                if(version <= 2017)
+                {
+                    packageManagerAvailable = false;
+                }
+                else {
+                    packageList = PackageManifest(directory)
+                    packageList.LoadManifest()
+                }
                 assets = AssetsExtractor(directory)
                 assets.ScanAssetFolder()
 
