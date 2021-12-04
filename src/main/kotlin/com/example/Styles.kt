@@ -1,5 +1,6 @@
 package com.example
 
+import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import tornadofx.Stylesheet
 import tornadofx.box
@@ -11,6 +12,10 @@ class Styles : Stylesheet() {
         val heading by cssclass()
 
         val textArea by cssclass()
+
+        val normalText by cssclass()
+
+        val question by cssclass()
     }
 
     init {
@@ -24,6 +29,15 @@ class Styles : Stylesheet() {
             fontSize = 15.px
             fontWeight = FontWeight.BOLD
         }
+
+        normalText {
+            fontWeight = FontWeight.NORMAL
+        }
+
+        question{
+            fill = Color.RED
+        }
+
 
     }
 }

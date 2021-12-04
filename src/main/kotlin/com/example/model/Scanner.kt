@@ -102,7 +102,7 @@ class Scanner {
            }
            else
            {
-               return "Unknown Version Number"
+               return "0"
            }
 
 
@@ -207,6 +207,28 @@ class Scanner {
 
     }
 
+    fun ClearData()
+    {
+
+
+        settingsExtractor = ProjectSettingsExtractor(File(""),0)
+        sceneExtractor = SceneExtractor(File(""),0)
+        packageList = PackageManifest(File(""))
+        assets = AssetsExtractor(File(""))
+
+
+        editorVersion = "0"
+        projectName =  String()
+        scenesInBuild = listOf<String>()
+        totalScenesinAssetFolder = listOf<String>()
+
+        assetInfo = String()
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        report = String()
+
+        packageManagerAvailable = true
+
+    }
 
 }
 

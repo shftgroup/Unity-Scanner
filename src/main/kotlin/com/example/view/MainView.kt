@@ -13,11 +13,14 @@ import javafx.scene.control.ButtonBar
 import javafx.scene.control.TabPane
 import javafx.scene.image.Image
 import javafx.scene.media.AudioClip
+import javafx.scene.paint.Color
+import javafx.scene.text.Font
+import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
 import tornadofx.*
 import java.io.File
 import java.io.FileInputStream
-import java.nio.charset.Charset
+
 
 
 class MainView : View("Unity Scanner Version 0.5") {
@@ -110,7 +113,9 @@ class MainView : View("Unity Scanner Version 0.5") {
                 {
                     setOnAction {
 
+                        controller.mainScanner.ClearData()
                         ClearLists()
+
                         reportText.set("")
 
                         controller.OpenProject()
@@ -149,6 +154,9 @@ class MainView : View("Unity Scanner Version 0.5") {
                         totalScenesInAssetsList.set(sceneNameString)
 
                         projectPackages = controller?.GetPackages()
+
+                        if(projectPackages.count() > 0)
+                            currentPackageInfo.set("")
 
                         assetInfo.set(controller.GetAssetInfo())
 
@@ -375,14 +383,7 @@ class MainView : View("Unity Scanner Version 0.5") {
                             println("Click! on Index " + index)
 
                             try{
-                                val v = controller.mainScanner.editorVersion.substringBefore('.').toInt()
-                                print("Version: " + v)
-                                if(v  <= 2017)
-                                {
-                                    println("OLD VERSION DETECTED")
-                                    currentPackageInfo.set("Package Manager is not availabe prior to Unity 2018")
 
-                                }
 
                                     if(projectPackages.count() > 0)
                                     {
@@ -985,6 +986,53 @@ class MainView : View("Unity Scanner Version 0.5") {
 
 
             }
+            tab("Info")
+            {
+                tabpane {
+
+
+                    tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
+
+                    tab("FAQ")
+                    {
+                        textflow {
+                            val lines = File("Info.txt").readLines()
+                            println("Lines in file: " + lines.count())
+
+                            var index = 0
+
+
+                                    vbox {
+                                        for (index in 0 until lines.count()) {
+                                            println(lines[index])
+                                            label(lines[index])
+                                            {
+                                                addClass(Styles.heading)
+                                            }
+                                            text(lines[index] + "\n")
+                                            {
+                                                fill = Color.GREEN
+                                                font = Font(15.0)
+                                            }
+                                        }
+                                    }
+
+                        }
+
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+
+            }
             }
 
     }
@@ -993,6 +1041,15 @@ class MainView : View("Unity Scanner Version 0.5") {
     {
         projectPackages.clear()
 
+        currentPackageInfo.set("Package Manager is not availabe prior to Unity 2018")
+      //  val v = controller.mainScanner.editorVersion.substringBefore('.').toInt()
+      //  print("Version: " + v)
+       // if(v  <= 2017)
+       // {
+        //    println("OLD VERSION DETECTED")
+        //    currentPackageInfo.set("Package Manager is not availabe prior to Unity 2018")
+
+       // }
 
         packageNames.clear()
 
