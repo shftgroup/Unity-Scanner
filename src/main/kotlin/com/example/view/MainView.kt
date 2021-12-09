@@ -23,7 +23,7 @@ import java.io.FileInputStream
 
 
 
-class MainView : View("Unity Scanner Version 0.5") {
+class MainView : View("Unity Scanner Version 1.0") {
 
 
 
@@ -986,7 +986,7 @@ class MainView : View("Unity Scanner Version 0.5") {
 
 
             }
-            tab("Info")
+            /*tab("Info")
             {
                 tabpane {
 
@@ -1032,7 +1032,7 @@ class MainView : View("Unity Scanner Version 0.5") {
 
 
 
-            }
+            }*/
             }
 
     }
