@@ -12,12 +12,15 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.TabPane
 import javafx.scene.image.Image
+import javafx.scene.input.KeyCode
 import javafx.scene.media.AudioClip
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
+import sun.security.rsa.RSAUtil
 import tornadofx.*
+import java.awt.event.KeyEvent
 import java.io.File
 import java.io.FileInputStream
 
@@ -96,6 +99,8 @@ class MainView : View("Unity Scanner Version 1.0") {
 
     var TA = javafx.scene.control.TextArea()
     lateinit var TA2:javafx.scene.control.Label
+
+    var currentIndex = 0
 
     override val root = vbox {
         alignment = Pos.TOP_LEFT
@@ -468,281 +473,270 @@ class MainView : View("Unity Scanner Version 1.0") {
                 tabpane {
                     tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
 
-                    tab("Asset Summary")
-                    {
-                        prefHeight = 650.0
-                        hbox {
-                            textarea(assetInfo)
-                            {
-                                bind(assetInfo)
-                                addClass(Styles.textArea)
-                                isEditable = false
+                        tab("Asset Summary")
+                        {
+                            prefHeight = 650.0
+                            hbox {
+                                textarea(assetInfo)
+                                {
+                                    bind(assetInfo)
+                                    addClass(Styles.textArea)
+                                    isEditable = false
+
+                                }
+
 
                             }
-
-
                         }
-                    }
-                    tab("Images")
-                    {
-                        hbox {
-                            listview(values = imageList)
-                            {
-                                addClass(Styles.textArea)
-
-
-                               prefWidth = 600.0
-                                prefHeight = 600.0
-
-                                try {
+                        tab("Images")
+                        {
+                            hbox {
+                                listview(values = imageList)
+                                {
+                                    addClass(Styles.textArea)
+                                    prefWidth = 600.0
+                                    prefHeight = 600.0
                                     setOnMouseClicked() {
-                                        val index = this.selectionModel.selectedIndex;
+                                            currentIndex = this.selectionModel.selectedIndex;
 
-                                        println("Click! on Index " + index)
+                                            if(/*index != -1*/imagePaths.count() > 0)
+                                            {
+                                                println("Click! on Index " + currentIndex)
+                                                UpdateImage()
+                                            }
+                                        }
+                                    setOnKeyPressed {
+                                       if(it.code == KeyCode.DOWN)
+                                       {
+                                           DownPressed()
 
-
-                                        val fileStream = FileInputStream(imagePaths[index])
-                                        val image = Image(fileStream)
-                                        currentImage.set(image)
-
-                                        currentImageInfo.set("")
-
-                                        val imageInfo = "Image Size: " + image.width + " X " + image.height +"\n" + "Path: " + imagePaths[index]
-
-
-                                        currentImageInfo.set(imageInfo)
-
+                                           if(imagePaths.count() > 0)
+                                           {
+                                              UpdateImage()
+                                           }
+                                       }
+                                        if(it.code == KeyCode.UP)
+                                        {
+                                            UpPressed()
+                                            if(imagePaths.count() > 0)
+                                            {
+                                                UpdateImage()
+                                            }
+                                        }
                                     }
                                 }
-                                catch(e:Exception) {
+                                vbox {
+                                    imageview(currentImage)
+                                    {
+
+                                        fitHeight = 600.0
+                                        fitWidth = 600.0
+
+                                        setPreserveRatio(true)
+                                    }
+
+                                    textarea()
+                                    {
+
+                                        isEditable = false
+                                        prefWidth = 1200.0
+                                        prefHeight = 200.0
+
+                                        addClass(Styles.heading)
+                                        bind(currentImageInfo)
+                                    }
                                 }
+                            }
+                        }
+                        tab("Text")
+                        {
+                            hbox {
+                                listview(values = textList)
+                                {
+                                    addClass(Styles.textArea)
+
+                                    prefWidth = 600.0
+
+                                    try {
+                                        setOnMouseClicked() {
+                                            val index = this.selectionModel.selectedIndex;
+
+                                            println("Click! on Index " + index)
+
+                                            //change for text files
+                                            val fileName = textPaths[index]
+
+                                            currentText.set(File(fileName).readText())
+
+
+                                        }
+                                    } catch (e: Exception) {
+                                    }
+
+                                }
+                                textarea(currentText) {
+
+
+                                    bind(currentText)
+                                    prefWidth = 1200.0
+                                    prefHeight = 650.0
+
+                                    isEditable = false
+
+                                    // val soundMyNoise = AudioClip(File("C:\\Users\\jsj59\\Desktop\\Moss Giant Attack_V1.wav").toURI().toString())
+                                    // soundMyNoise.play()
+
+
+                                }
+                            }
+                        }
+                        tab("Audio")
+                        {
+                            hbox {
+                                listview(values = audioList)
+                                {
+                                    addClass(Styles.textArea)
+
+                                    prefWidth = 600.0
+
+                                    try {
+                                        setOnMouseClicked() {
+                                            val index = this.selectionModel.selectedIndex;
+
+                                            println("Click! on Index " + index)
+
+                                            //need to stop all playing sounds before starting a new one
+                                            //load a defualt sound in the beginning
+                                            //then stop it here
+
+                                            audioClip = AudioClip(File(audioPaths[index]).toURI().toString())
+                                            // audioClip.play()
+
+
+                                        }
+                                    } catch (e: Exception) {
+                                    }
+
+                                }
+
+                                hbox {
+
+                                    button("Play Sound")
+                                    {
+                                        hboxConstraints {
+                                            marginTop = 225.0
+                                            marginLeft = 400.0
+
+                                        }
+                                        style {
+                                            padding = box(20.px)
+
+
+                                        }
+                                        setOnAction {
+
+                                            audioClip.play()
+                                        }
+                                    }
+                                    button("Stop Sound")
+                                    {
+                                        hboxConstraints {
+                                            marginTop = 225.0
+                                            marginLeft = 100.0
+
+                                        }
+                                        style {
+                                            padding = box(20.px)
+
+
+                                        }
+                                        setOnAction {
+
+                                            audioClip.stop()
+                                        }
+                                    }
+
+                                }
+
 
                             }
-                            vbox {
-                                imageview(currentImage)
+                        }
+                        tab("Scripts")
+                        {
+                            hbox {
+                                listview(values = scriptList)
                                 {
+                                    addClass(Styles.textArea)
+
+                                    prefWidth = 600.0
+
+                                    try {
+                                        setOnMouseClicked() {
+                                            val index = this.selectionModel.selectedIndex;
+
+                                            println("Click! on Index " + index)
+
+                                            //change for text files
+                                            val scriptName = scriptPaths[index]
+
+                                            currentScript.set(File(scriptName).readText())
 
 
-                                    fitHeight = 600.0
-                                    fitWidth = 600.0
-
-                                    setPreserveRatio(true)
-
-                                    //setImage(image)
-
+                                        }
+                                    } catch (e: Exception) {
+                                    }
 
                                 }
-                                textarea()
-                                {
+                                textarea(currentScript) {
+                                    bind(currentScript)
+                                    prefWidth = 1200.0
+                                    prefHeight = 600.0
 
                                     isEditable = false
 
 
-                                    prefWidth = 1200.0
-                                    prefHeight = 200.0
-
-                                    addClass(Styles.heading)
-
-                                    bind(currentImageInfo)
-
                                 }
                             }
                         }
-                    }
-                    tab("Text")
-                    {
-                        hbox {
-                            listview(values = textList)
-                            {
-                                addClass(Styles.textArea)
-
-                                prefWidth = 600.0
-
-                                try {
-                                    setOnMouseClicked() {
-                                        val index = this.selectionModel.selectedIndex;
-
-                                        println("Click! on Index " + index)
-
-                                        //change for text files
-                                        val fileName = textPaths[index]
-
-                                        currentText.set( File(fileName).readText())
-
-
-                                    }
-                                }
-                                catch(e:Exception) {
-                                }
-
-                            }
-                            textarea(currentText) {
-
-
-                                bind(currentText)
-                                prefWidth = 1200.0
-                                prefHeight = 650.0
-
-                                isEditable = false
-
-                               // val soundMyNoise = AudioClip(File("C:\\Users\\jsj59\\Desktop\\Moss Giant Attack_V1.wav").toURI().toString())
-                               // soundMyNoise.play()
-
-
-                            }
-                        }
-                    }
-                    tab("Audio")
-                    {
-                        hbox {
-                            listview(values = audioList)
-                            {
-                                addClass(Styles.textArea)
-
-                                prefWidth = 600.0
-
-                                try {
-                                    setOnMouseClicked() {
-                                        val index = this.selectionModel.selectedIndex;
-
-                                        println("Click! on Index " + index)
-
-                                        //need to stop all playing sounds before starting a new one
-                                        //load a defualt sound in the beginning
-                                        //then stop it here
-
-                                        audioClip = AudioClip(File(audioPaths[index]).toURI().toString())
-                                       // audioClip.play()
-
-
-                                    }
-                                }
-                                catch(e:Exception) {
-                                }
-
-                            }
-
+                        tab("Unity Native Files")
+                        {
                             hbox {
+                                listview(values = nativeList)
+                                {
+                                    addClass(Styles.textArea)
 
-                                        button("Play Sound")
-                                        {
-                                            hboxConstraints {
-                                                marginTop = 225.0
-                                                marginLeft = 400.0
+                                    prefWidth = 600.0
 
-                                            }
-                                            style {
-                                                padding = box(20.px)
+                                    try {
+                                        setOnMouseClicked() {
+                                            val index = this.selectionModel.selectedIndex;
+
+                                            println("Click! on Index " + index)
+
+                                            //change for text files
+                                            val fileName = nativePaths[index]
+
+                                            currentNativeItem.set(File(fileName).readText())
 
 
-                                            }
-                                            setOnAction {
-
-                                                audioClip.play()
-                                            }
                                         }
-                                        button("Stop Sound")
-                                        {
-                                            hboxConstraints {
-                                                marginTop = 225.0
-                                                marginLeft = 100.0
-
-                                            }
-                                            style {
-                                                padding = box(20.px)
-
-
-                                            }
-                                            setOnAction {
-
-                                                audioClip.stop()
-                                            }
-                                        }
-
+                                    } catch (e: Exception) {
                                     }
 
-
-                        }
-                    }
-                    tab("Scripts")
-                    {
-                        hbox {
-                            listview(values = scriptList)
-                            {
-                                addClass(Styles.textArea)
-
-                                prefWidth = 600.0
-
-                                try {
-                                    setOnMouseClicked() {
-                                        val index = this.selectionModel.selectedIndex;
-
-                                        println("Click! on Index " + index)
-
-                                        //change for text files
-                                        val scriptName = scriptPaths[index]
-
-                                        currentScript.set( File(scriptName).readText())
-
-
-                                    }
                                 }
-                                catch(e:Exception) {
+                                textarea(currentNativeItem) {
+                                    bind(currentNativeItem)
+                                    prefWidth = 1200.0
+                                    prefHeight = 650.0
+
+                                    isEditable = false
+
+
                                 }
-
-                            }
-                            textarea(currentScript) {
-                                bind(currentScript)
-                                prefWidth = 1200.0
-                                prefHeight = 600.0
-
-                                isEditable = false
-
-
 
                             }
                         }
-                    }
-                    tab("Unity Native Files")
-                    {
-                        hbox {
-                            listview(values = nativeList)
-                            {
-                                addClass(Styles.textArea)
-
-                                prefWidth = 600.0
-
-                                try {
-                                    setOnMouseClicked() {
-                                        val index = this.selectionModel.selectedIndex;
-
-                                        println("Click! on Index " + index)
-
-                                        //change for text files
-                                        val fileName = nativePaths[index]
-
-                                        currentNativeItem.set( File(fileName).readText())
-
-
-                                    }
-                                }
-                                catch(e:Exception) {
-                                }
-
-                            }
-                            textarea(currentNativeItem) {
-                                bind(currentNativeItem)
-                                prefWidth = 1200.0
-                                prefHeight = 650.0
-
-                                isEditable = false
-
-
-                            }
-
-                        }
-                }
-                  /*  tab("Models")
+                        /*  tab("Models")
                     {
                         hbox {
                             listview(values = modelList)
@@ -782,211 +776,205 @@ class MainView : View("Unity Scanner Version 1.0") {
                         }
                     }
                     */
-                    tab("Prefabs")
-                    {
-                        hbox {
-                            listview(values = prefabList)
-                            {
-                                addClass(Styles.textArea)
-
-                                prefWidth = 600.0
-
-                                try {
-                                    setOnMouseClicked() {
-                                        val index = this.selectionModel.selectedIndex;
-
-                                        println("Click! on Index " + index)
-
-                                        //change for text files
-                                        val fileName = prefabPaths[index]
-
-                                        currentPrefab.set( File(fileName).readText())
-
-
-                                    }
-                                }
-                                catch(e:Exception) {
-                                }
-
-                            }
-                            textarea(currentPrefab) {
-                                bind(currentPrefab)
-                                prefWidth = 1200.0
-                                prefHeight = 650.0
-
-                                isEditable = false
-
-
-                            }
-
-                        }
-                    }
-                    tab("Shaders")
-                    {
-                        hbox {
-                            listview(values = shaderList)
-                            {
-                                addClass(Styles.textArea)
-
-                                prefWidth = 600.0
-
-                                try {
-                                    setOnMouseClicked() {
-                                        val index = this.selectionModel.selectedIndex;
-
-                                        println("Click! on Index " + index)
-
-                                        //change for text files
-                                        val fileName = shaderPaths[index]
-
-                                        currentShader.set( File(fileName).readText())
-
-
-                                    }
-                                }
-                                catch(e:Exception) {
-                                }
-
-                            }
-                            textarea(currentShader) {
-                                bind(currentShader)
-                                prefWidth = 1200.0
-                                prefHeight = 650.0
-
-                                isEditable = false
-
-
-                            }
-
-                        }
-                    }
-                    tab("VFX")
-                    {
-                        hbox {
-                            listview(values = vfxList)
-                            {
-                                addClass(Styles.textArea)
-
-                                prefWidth = 600.0
-
-                                try {
-                                    setOnMouseClicked() {
-                                        val index = this.selectionModel.selectedIndex;
-
-                                        println("Click! on Index " + index)
-
-                                        //change for text files
-                                        val fileName = vfxPaths[index]
-
-                                        currentVfx.set( File(fileName).readText())
-
-
-                                    }
-                                }
-                                catch(e:Exception) {
-                                }
-
-                            }
-                            textarea(currentVfx) {
-                                bind(currentVfx)
-                                prefWidth = 1200.0
-                                prefHeight = 650.0
-
-                                isEditable = false
-
-
-                            }
-
-                        }
-                    }
-                    tab("Fonts")
-                    {
-                        hbox {
-                            listview(values = fontList)
-                            {
-                                addClass(Styles.textArea)
-
-                                prefWidth = 600.0
-
-                                try {
-                                    setOnMouseClicked() {
-                                        val index = this.selectionModel.selectedIndex;
-
-                                        println("Click! on Index " + index)
-
-                                        val fonts = File(fontPaths[index])
-                                        val fontFile = FileInputStream(fonts)
-
-                                       currentFont =  javafx.scene.text.Font.loadFont(fontFile,24.0)
-
-                                        if(currentFont != null) {
-
-
-                                            TA2.fontProperty().set( currentFont)
-
-                                            println(fontPaths[index])
-                                            fontText.set("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-
-                                        }
-                                        else
-                                        {
-                                            println("Current Font is NUll")
-                                        }
-
-                                    }
-                                }
-                                catch(e:Exception) {
-                                }
-
-                            }
-
+                        tab("Prefabs")
+                        {
                             hbox {
-                                hboxConstraints {
-                                   // marginTop = 175.0
-                                    marginLeft = 50.0
+                                listview(values = prefabList)
+                                {
+                                    addClass(Styles.textArea)
+
+                                    prefWidth = 600.0
+
+                                    try {
+                                        setOnMouseClicked() {
+                                            val index = this.selectionModel.selectedIndex;
+
+                                            println("Click! on Index " + index)
+
+                                            //change for text files
+                                            val fileName = prefabPaths[index]
+
+                                            currentPrefab.set(File(fileName).readText())
+
+
+                                        }
+                                    } catch (e: Exception) {
+                                    }
 
                                 }
-
-                                style {
-                                    padding = box(20.px)
-
-
-                                }
-
-                                TA2 = label(fontText) {
-
-                                    bind(fontText)
+                                textarea(currentPrefab) {
+                                    bind(currentPrefab)
                                     prefWidth = 1200.0
                                     prefHeight = 650.0
 
-                                    font = javafx.scene.text.Font.getDefault()
-
-
-                                    //isEditable = false
+                                    isEditable = false
 
 
                                 }
+
+                            }
+                        }
+                        tab("Shaders")
+                        {
+                            hbox {
+                                listview(values = shaderList)
+                                {
+                                    addClass(Styles.textArea)
+
+                                    prefWidth = 600.0
+
+                                    try {
+                                        setOnMouseClicked() {
+                                            val index = this.selectionModel.selectedIndex;
+
+                                            println("Click! on Index " + index)
+
+                                            //change for text files
+                                            val fileName = shaderPaths[index]
+
+                                            currentShader.set(File(fileName).readText())
+
+
+                                        }
+                                    } catch (e: Exception) {
+                                    }
+
+                                }
+                                textarea(currentShader) {
+                                    bind(currentShader)
+                                    prefWidth = 1200.0
+                                    prefHeight = 650.0
+
+                                    isEditable = false
+
+
+                                }
+
+                            }
+                        }
+                        tab("VFX")
+                        {
+                            hbox {
+                                listview(values = vfxList)
+                                {
+                                    addClass(Styles.textArea)
+
+                                    prefWidth = 600.0
+
+                                    try {
+                                        setOnMouseClicked() {
+                                            val index = this.selectionModel.selectedIndex;
+
+                                            println("Click! on Index " + index)
+
+                                            //change for text files
+                                            val fileName = vfxPaths[index]
+
+                                            currentVfx.set(File(fileName).readText())
+
+
+                                        }
+                                    } catch (e: Exception) {
+                                    }
+
+                                }
+                                textarea(currentVfx) {
+                                    bind(currentVfx)
+                                    prefWidth = 1200.0
+                                    prefHeight = 650.0
+
+                                    isEditable = false
+
+
+                                }
+
+                            }
+                        }
+                        tab("Fonts")
+                        {
+                            hbox {
+                                listview(values = fontList)
+                                {
+                                    addClass(Styles.textArea)
+
+                                    prefWidth = 600.0
+
+                                    try {
+                                        setOnMouseClicked() {
+                                            val index = this.selectionModel.selectedIndex;
+
+                                            println("Click! on Index " + index)
+
+                                            val fonts = File(fontPaths[index])
+                                            val fontFile = FileInputStream(fonts)
+
+                                            currentFont = javafx.scene.text.Font.loadFont(fontFile, 24.0)
+
+                                            if (currentFont != null) {
+
+
+                                                TA2.fontProperty().set(currentFont)
+
+                                                println(fontPaths[index])
+                                                fontText.set("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+                                            } else {
+                                                println("Current Font is NUll")
+                                            }
+
+                                        }
+                                    } catch (e: Exception) {
+                                    }
+
+                                }
+
+                                hbox {
+                                    hboxConstraints {
+                                        // marginTop = 175.0
+                                        marginLeft = 50.0
+
+                                    }
+
+                                    style {
+                                        padding = box(20.px)
+
+
+                                    }
+
+                                    TA2 = label(fontText) {
+
+                                        bind(fontText)
+                                        prefWidth = 1200.0
+                                        prefHeight = 650.0
+
+                                        font = javafx.scene.text.Font.getDefault()
+
+
+                                        //isEditable = false
+
+
+                                    }
+                                }
+
+                            }
+                        }
+
+
+                        tab("Report")
+                        {
+                            textarea {
+                                addClass(Styles.heading)
+
+                                isEditable = true
+
+                                bind(reportText)
+
+
                             }
 
+
                         }
-                    }
-                }
-            }
-            tab("Report")
-            {
-                textarea {
-                    addClass(Styles.heading)
-
-                    isEditable = true
-
-                    bind(reportText)
-
-
-                }
-
-
-            }
-            /*tab("Info")
+                        /*tab("Info")
             {
                 tabpane {
 
@@ -1033,7 +1021,13 @@ class MainView : View("Unity Scanner Version 1.0") {
 
 
             }*/
-            }
+
+
+                }
+
+        }
+
+        }
 
     }
 
@@ -1084,7 +1078,51 @@ class MainView : View("Unity Scanner Version 1.0") {
 
     }
 
+    fun CheckClickBounds()
+    {
 
+    }
+
+    fun UpPressed()
+    {
+        currentIndex -= 1
+        if(currentIndex < 0)
+        {
+            currentIndex = 0
+            println("Count: " + imagePaths.count() + " Index: " + currentIndex)
+        }
+    }
+
+    fun DownPressed()
+    {
+        currentIndex += 1
+        if(currentIndex > imagePaths.count() - 1)
+        {
+            currentIndex -= 1
+
+            if(currentIndex < 0)
+            {
+                currentIndex = 0
+            }
+
+            println("Count: " + imagePaths.count() + " Index: " + currentIndex)
+        }
+    }
+
+    fun UpdateImage()
+    {
+        val fileStream = FileInputStream(imagePaths[currentIndex])
+        val image = Image(fileStream)
+        currentImage.set(image)
+
+        currentImageInfo.set("")
+
+        val imageInfo =
+            "Image Size: " + image.width + " X " + image.height + "\n" + "Path: " + imagePaths[currentIndex]
+
+
+        currentImageInfo.set(imageInfo)
+    }
 
 
 
