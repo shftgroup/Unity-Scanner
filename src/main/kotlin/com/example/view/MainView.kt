@@ -499,7 +499,7 @@ class MainView : View("Unity Scanner Version 1.0") {
                                     setOnMouseClicked() {
                                             currentIndex = this.selectionModel.selectedIndex;
 
-                                            if(/*index != -1*/imagePaths.count() > 0)
+                                            if((currentIndex != -1) && (imagePaths.count() > 0))
                                             {
                                                 println("Click! on Index " + currentIndex)
                                                 UpdateImage()
@@ -508,7 +508,7 @@ class MainView : View("Unity Scanner Version 1.0") {
                                     setOnKeyPressed {
                                        if(it.code == KeyCode.DOWN)
                                        {
-                                           DownPressed()
+                                           DownPressed(imagePaths.count())
 
                                            if(imagePaths.count() > 0)
                                            {
@@ -550,42 +550,48 @@ class MainView : View("Unity Scanner Version 1.0") {
                         }
                         tab("Text")
                         {
+
                             hbox {
                                 listview(values = textList)
                                 {
                                     addClass(Styles.textArea)
 
                                     prefWidth = 600.0
-
-                                    try {
-                                        setOnMouseClicked() {
-                                            val index = this.selectionModel.selectedIndex;
-
-                                            println("Click! on Index " + index)
-
-                                            //change for text files
-                                            val fileName = textPaths[index]
-
-                                            currentText.set(File(fileName).readText())
-
-
+                                    setOnMouseClicked() {
+                                       currentIndex = this.selectionModel.selectedIndex;
+                                        if((currentIndex != -1) && (textPaths.count() > 0))
+                                        {
+                                            println("Click! on Index " + currentIndex)
+                                            UpdateText()
                                         }
-                                    } catch (e: Exception) {
+                                    }
+                                    setOnKeyPressed{
+
+                                        if(it.code == KeyCode.DOWN)
+                                        {
+                                            DownPressed(textPaths.count())
+
+                                            if(textPaths.count() > 0)
+                                            {
+                                                UpdateText()
+                                            }
+                                        }
+                                        if(it.code == KeyCode.UP)
+                                        {
+                                            UpPressed()
+                                            if(textPaths.count() > 0)
+                                            {
+                                                UpdateText()
+                                            }
+                                        }
                                     }
 
                                 }
                                 textarea(currentText) {
-
-
                                     bind(currentText)
                                     prefWidth = 1200.0
                                     prefHeight = 650.0
-
                                     isEditable = false
-
-                                    // val soundMyNoise = AudioClip(File("C:\\Users\\jsj59\\Desktop\\Moss Giant Attack_V1.wav").toURI().toString())
-                                    // soundMyNoise.play()
-
 
                                 }
                             }
@@ -599,22 +605,35 @@ class MainView : View("Unity Scanner Version 1.0") {
 
                                     prefWidth = 600.0
 
-                                    try {
-                                        setOnMouseClicked() {
-                                            val index = this.selectionModel.selectedIndex;
 
-                                            println("Click! on Index " + index)
-
-                                            //need to stop all playing sounds before starting a new one
-                                            //load a defualt sound in the beginning
-                                            //then stop it here
-
-                                            audioClip = AudioClip(File(audioPaths[index]).toURI().toString())
-                                            // audioClip.play()
-
+                                    setOnMouseClicked() {
+                                            currentIndex = this.selectionModel.selectedIndex;
+                                            if((currentIndex != -1) && (audioPaths.count() > 0))
+                                            {
+                                                println("Click! on Index " + currentIndex)
+                                                audioClip = AudioClip(File(audioPaths[currentIndex]).toURI().toString())
+                                            }
 
                                         }
-                                    } catch (e: Exception) {
+                                    setOnKeyPressed{
+
+                                        if(it.code == KeyCode.DOWN)
+                                        {
+                                            DownPressed(audioPaths.count())
+
+                                            if(audioPaths.count() > 0)
+                                            {
+                                                audioClip = AudioClip(File(audioPaths[currentIndex]).toURI().toString())
+                                            }
+                                        }
+                                        if(it.code == KeyCode.UP)
+                                        {
+                                            UpPressed()
+                                            if(audioPaths.count() > 0)
+                                            {
+                                                audioClip = AudioClip(File(audioPaths[currentIndex]).toURI().toString())
+                                            }
+                                        }
                                     }
 
                                 }
@@ -1078,10 +1097,6 @@ class MainView : View("Unity Scanner Version 1.0") {
 
     }
 
-    fun CheckClickBounds()
-    {
-
-    }
 
     fun UpPressed()
     {
@@ -1093,10 +1108,10 @@ class MainView : View("Unity Scanner Version 1.0") {
         }
     }
 
-    fun DownPressed()
+    fun DownPressed(length:Int)
     {
         currentIndex += 1
-        if(currentIndex > imagePaths.count() - 1)
+        if(currentIndex > length - 1)
         {
             currentIndex -= 1
 
@@ -1105,7 +1120,7 @@ class MainView : View("Unity Scanner Version 1.0") {
                 currentIndex = 0
             }
 
-            println("Count: " + imagePaths.count() + " Index: " + currentIndex)
+            println("Count: " + length + " Index: " + currentIndex)
         }
     }
 
@@ -1122,6 +1137,13 @@ class MainView : View("Unity Scanner Version 1.0") {
 
 
         currentImageInfo.set(imageInfo)
+    }
+    fun UpdateText()
+    {
+        //change for text files
+        val fileName = textPaths[currentIndex]
+
+        currentText.set(File(fileName).readText())
     }
 
 
