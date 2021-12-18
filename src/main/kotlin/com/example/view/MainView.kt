@@ -374,80 +374,51 @@ class MainView : View("Unity Scanner Version 1.0") {
 
                 hbox{
 
-                    try{
+
                     listview(values = packageNames)
                     {
                         addClass(Styles.textArea)
                        prefWidth = 500.0
                         prefHeight = 650.0
                         setOnMouseClicked() {
-                            val index = this.selectionModel.selectedIndex;
-
-                            lateinit var packageDetails:PackageManifest.UnityPackage
-
-                            println("Click! on Index " + index)
-
-                            try{
+                            currentIndex = this.selectionModel.selectedIndex;
 
 
-                                    if(projectPackages.count() > 0)
-                                    {
-
-                                    if(index >=0 && index < projectPackages.count())
-                                    {
-                                        packageDetails = projectPackages[index]
-                                        }
-                                        var detailsString = "Package Details:\n"
-
-                                        println(packageDetails.name)
-                                        detailsString += "Package Name: " + packageDetails.name + "\n"
-                                        detailsString += "Package Version: " + packageDetails.version + "\n"
-                                        detailsString += "Lowest Compatible Unity Version: " + packageDetails.unity + "\n"
-                                        detailsString += "Display name: " + packageDetails.displayName + "\n"
-                                        detailsString += "Package Details: " + packageDetails.description + "\n\n"
-
-                                        detailsString += "Source Code Repository Info:\n"
-
-                                        if(packageDetails.repository != null) {
-                                            detailsString += "VCS used: " + packageDetails.repository.type + "\n"
-                                            detailsString += "Repository URL: " + packageDetails.repository.url + "\n"
-                                            detailsString += "Repository Revision: " + packageDetails.repository.revision + "\n\n"
-                                        }
-                                         else{
-                                            detailsString += "None\n\n"
-                                        }
-
-                                        if(packageDetails.dependendies.count() > 0)
-                                        {
-                                            detailsString += "Dependencies:\n"
-                                            detailsString += packageDetails.dependendies.toString() + "\n\n"
-
-                                        }
-                                        else
-                                        {
-                                         detailsString += "No dependencies were listed for this package\n\n"
-                                        }
-
-                                        detailsString += "Total Packages: " + projectPackages.count()
-
-                                        currentPackageInfo.set(detailsString)
-                                    }
-
-
-
-
-                            }
-                            catch(e:Exception)
+                            if((currentIndex != -1) && (projectPackages.count() > 0))
                             {
+                                if(projectPackages.count() > 0)
+                                {
+
+                                   UpdatePackageDetails()
+
+                                }
 
                             }
                         }
-                    }
-                    }
-                    catch(e:Exception)
-                    {
+
+                        setOnKeyPressed{
+
+                            if(it.code == KeyCode.DOWN)
+                            {
+                                DownPressed(projectPackages.count())
+
+                                if(projectPackages.count() > 0)
+                                {
+                                    UpdatePackageDetails()
+                                }
+                            }
+                            if(it.code == KeyCode.UP)
+                            {
+                                UpPressed()
+                                if(projectPackages.count() > 0)
+                                {
+                                    UpdatePackageDetails()
+                                }
+                            }
+                        }
 
                     }
+
                     textarea()
                     {
                         prefWidth = 1200.0
@@ -941,20 +912,39 @@ class MainView : View("Unity Scanner Version 1.0") {
 
                                     prefWidth = 600.0
 
-                                    try {
-                                        setOnMouseClicked() {
-                                            val index = this.selectionModel.selectedIndex;
 
-                                            println("Click! on Index " + index)
+                                    setOnMouseClicked() {
 
-                                            //change for text files
-                                            val fileName = vfxPaths[index]
+                                            currentIndex = this.selectionModel.selectedIndex;
+                                            if((currentIndex != -1) && (vfxPaths.count() > 0))
+                                            {
 
-                                            currentVfx.set(File(fileName).readText())
+                                                UpdateText(currentVfx,vfxPaths[currentIndex])
+                                            }
+
+
 
 
                                         }
-                                    } catch (e: Exception) {
+                                    setOnKeyPressed{
+
+                                        if(it.code == KeyCode.DOWN)
+                                        {
+                                            DownPressed(vfxPaths.count())
+
+                                            if(vfxPaths.count() > 0)
+                                            {
+                                                UpdateText(currentVfx,vfxPaths[currentIndex])
+                                            }
+                                        }
+                                        if(it.code == KeyCode.UP)
+                                        {
+                                            UpPressed()
+                                            if(vfxPaths.count() > 0)
+                                            {
+                                                UpdateText(currentVfx,vfxPaths[currentIndex])
+                                            }
+                                        }
                                     }
 
                                 }
@@ -979,31 +969,34 @@ class MainView : View("Unity Scanner Version 1.0") {
 
                                     prefWidth = 600.0
 
-                                    try {
-                                        setOnMouseClicked() {
-                                            val index = this.selectionModel.selectedIndex;
 
-                                            println("Click! on Index " + index)
-
-                                            val fonts = File(fontPaths[index])
-                                            val fontFile = FileInputStream(fonts)
-
-                                            currentFont = javafx.scene.text.Font.loadFont(fontFile, 24.0)
-
-                                            if (currentFont != null) {
-
-
-                                                TA2.fontProperty().set(currentFont)
-
-                                                println(fontPaths[index])
-                                                fontText.set("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-
-                                            } else {
-                                                println("Current Font is NUll")
-                                            }
-
+                                    setOnMouseClicked() {
+                                        currentIndex = this.selectionModel.selectedIndex;
+                                        if((currentIndex != -1) && (fontPaths.count() > 0))
+                                        {
+                                            UpdateFont()
                                         }
-                                    } catch (e: Exception) {
+                                        }
+
+                                    setOnKeyPressed{
+
+                                        if(it.code == KeyCode.DOWN)
+                                        {
+                                            DownPressed(fontPaths.count())
+
+                                            if(fontPaths.count() > 0)
+                                            {
+                                               UpdateFont()
+                                            }
+                                        }
+                                        if(it.code == KeyCode.UP)
+                                        {
+                                            UpPressed()
+                                            if(fontPaths.count() > 0)
+                                            {
+                                                UpdateFont()
+                                            }
+                                        }
                                     }
 
                                 }
@@ -1185,6 +1178,71 @@ class MainView : View("Unity Scanner Version 1.0") {
         }
     }
 
+    fun UpdatePackageDetails()
+    {
+        lateinit var packageDetails:PackageManifest.UnityPackage
+
+        if(currentIndex >=0 && currentIndex < projectPackages.count())
+        {
+            packageDetails = projectPackages[currentIndex]
+        }
+        var detailsString = "Package Details:\n"
+
+        println(packageDetails.name)
+        detailsString += "Package Name: " + packageDetails.name + "\n"
+        detailsString += "Package Version: " + packageDetails.version + "\n"
+        detailsString += "Lowest Compatible Unity Version: " + packageDetails.unity + "\n"
+        detailsString += "Display name: " + packageDetails.displayName + "\n"
+        detailsString += "Package Details: " + packageDetails.description + "\n\n"
+
+        detailsString += "Source Code Repository Info:\n"
+
+        if(packageDetails.repository != null) {
+            detailsString += "VCS used: " + packageDetails.repository.type + "\n"
+            detailsString += "Repository URL: " + packageDetails.repository.url + "\n"
+            detailsString += "Repository Revision: " + packageDetails.repository.revision + "\n\n"
+        }
+        else{
+            detailsString += "None\n\n"
+        }
+
+        if(packageDetails.dependendies.count() > 0)
+        {
+            detailsString += "Dependencies:\n"
+            detailsString += packageDetails.dependendies.toString() + "\n\n"
+
+        }
+        else
+        {
+            detailsString += "No dependencies were listed for this package\n\n"
+        }
+
+        detailsString += "Total Packages: " + projectPackages.count()
+
+        currentPackageInfo.set(detailsString)
+    }
+
+
+    fun UpdateFont()
+    {
+        val fonts = File(fontPaths[currentIndex])
+        val fontFile = FileInputStream(fonts)
+
+        currentFont = javafx.scene.text.Font.loadFont(fontFile, 24.0)
+
+        if (currentFont != null) {
+
+
+            TA2.fontProperty().set(currentFont)
+
+            println(fontPaths[currentIndex])
+            fontText.set("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+        } else {
+            println("Current Font is NUll")
+        }
+    }
+
     fun UpdateImage()
     {
         val fileStream = FileInputStream(imagePaths[currentIndex])
@@ -1201,10 +1259,7 @@ class MainView : View("Unity Scanner Version 1.0") {
     }
     fun UpdateText(text:SimpleStringProperty, fileName:String)
     {
-        //change for text files
-       // val fileName = textPaths[currentIndex]
 
-       // currentText.set(File(fileName).readText())
         text.set((File(fileName).readText()))
 
     }
