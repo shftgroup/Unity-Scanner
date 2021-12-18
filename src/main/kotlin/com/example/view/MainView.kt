@@ -562,7 +562,7 @@ class MainView : View("Unity Scanner Version 1.0") {
                                         if((currentIndex != -1) && (textPaths.count() > 0))
                                         {
                                             println("Click! on Index " + currentIndex)
-                                            UpdateText()
+                                            UpdateText(currentText,textPaths[currentIndex])
                                         }
                                     }
                                     setOnKeyPressed{
@@ -573,7 +573,7 @@ class MainView : View("Unity Scanner Version 1.0") {
 
                                             if(textPaths.count() > 0)
                                             {
-                                                UpdateText()
+                                                UpdateText(currentText, textPaths[currentIndex])
                                             }
                                         }
                                         if(it.code == KeyCode.UP)
@@ -581,7 +581,7 @@ class MainView : View("Unity Scanner Version 1.0") {
                                             UpPressed()
                                             if(textPaths.count() > 0)
                                             {
-                                                UpdateText()
+                                                UpdateText(currentText, textPaths[currentIndex])
                                             }
                                         }
                                     }
@@ -689,20 +689,34 @@ class MainView : View("Unity Scanner Version 1.0") {
 
                                     prefWidth = 600.0
 
-                                    try {
-                                        setOnMouseClicked() {
-                                            val index = this.selectionModel.selectedIndex;
 
-                                            println("Click! on Index " + index)
-
-                                            //change for text files
-                                            val scriptName = scriptPaths[index]
-
-                                            currentScript.set(File(scriptName).readText())
-
-
+                                    setOnMouseClicked() {
+                                        currentIndex = this.selectionModel.selectedIndex;
+                                        if((currentIndex != -1) && (scriptPaths.count() > 0))
+                                        {
+                                            println("Click! on Index " + currentIndex)
+                                            UpdateText(currentScript,scriptPaths[currentIndex])
                                         }
-                                    } catch (e: Exception) {
+                                        }
+                                    setOnKeyPressed{
+
+                                        if(it.code == KeyCode.DOWN)
+                                        {
+                                            DownPressed(scriptPaths.count())
+
+                                            if(scriptPaths.count() > 0)
+                                            {
+                                                UpdateText(currentScript,scriptPaths[currentIndex])
+                                            }
+                                        }
+                                        if(it.code == KeyCode.UP)
+                                        {
+                                            UpPressed()
+                                            if(scriptPaths.count() > 0)
+                                            {
+                                                UpdateText(currentScript,scriptPaths[currentIndex])
+                                            }
+                                        }
                                     }
 
                                 }
@@ -712,8 +726,6 @@ class MainView : View("Unity Scanner Version 1.0") {
                                     prefHeight = 600.0
 
                                     isEditable = false
-
-
                                 }
                             }
                         }
@@ -726,20 +738,46 @@ class MainView : View("Unity Scanner Version 1.0") {
 
                                     prefWidth = 600.0
 
-                                    try {
-                                        setOnMouseClicked() {
-                                            val index = this.selectionModel.selectedIndex;
 
-                                            println("Click! on Index " + index)
+                                    setOnMouseClicked() {
+
+                                        currentIndex = this.selectionModel.selectedIndex;
+                                        if((currentIndex != -1) && (nativePaths.count() > 0))
+                                        {
+                                            println("Click! on Index " + currentIndex)
+                                            UpdateText(currentNativeItem,nativePaths[currentIndex])
+                                        }
+
+                                            //val index = this.selectionModel.selectedIndex;
+
+                                          //  println("Click! on Index " + index)
 
                                             //change for text files
-                                            val fileName = nativePaths[index]
+                                          //  val fileName = nativePaths[index]
 
-                                            currentNativeItem.set(File(fileName).readText())
+                                          //  currentNativeItem.set(File(fileName).readText())
 
 
                                         }
-                                    } catch (e: Exception) {
+                                    setOnKeyPressed{
+
+                                        if(it.code == KeyCode.DOWN)
+                                        {
+                                            DownPressed(nativePaths.count())
+
+                                            if(nativePaths.count() > 0)
+                                            {
+                                                UpdateText(currentNativeItem,nativePaths[currentIndex])
+                                            }
+                                        }
+                                        if(it.code == KeyCode.UP)
+                                        {
+                                            UpPressed()
+                                            if(nativePaths.count() > 0)
+                                            {
+                                                UpdateText(currentNativeItem,nativePaths[currentIndex])
+                                            }
+                                        }
                                     }
 
                                 }
@@ -1138,12 +1176,14 @@ class MainView : View("Unity Scanner Version 1.0") {
 
         currentImageInfo.set(imageInfo)
     }
-    fun UpdateText()
+    fun UpdateText(text:SimpleStringProperty, fileName:String)
     {
         //change for text files
-        val fileName = textPaths[currentIndex]
+       // val fileName = textPaths[currentIndex]
 
-        currentText.set(File(fileName).readText())
+       // currentText.set(File(fileName).readText())
+        text.set((File(fileName).readText()))
+
     }
 
 
