@@ -748,16 +748,6 @@ class MainView : View("Unity Scanner Version 1.0") {
                                             UpdateText(currentNativeItem,nativePaths[currentIndex])
                                         }
 
-                                            //val index = this.selectionModel.selectedIndex;
-
-                                          //  println("Click! on Index " + index)
-
-                                            //change for text files
-                                          //  val fileName = nativePaths[index]
-
-                                          //  currentNativeItem.set(File(fileName).readText())
-
-
                                         }
                                     setOnKeyPressed{
 
@@ -842,21 +832,38 @@ class MainView : View("Unity Scanner Version 1.0") {
 
                                     prefWidth = 600.0
 
-                                    try {
-                                        setOnMouseClicked() {
-                                            val index = this.selectionModel.selectedIndex;
 
-                                            println("Click! on Index " + index)
+                                    setOnMouseClicked() {
 
-                                            //change for text files
-                                            val fileName = prefabPaths[index]
-
-                                            currentPrefab.set(File(fileName).readText())
-
+                                        currentIndex = this.selectionModel.selectedIndex;
+                                        if((currentIndex != -1) && (prefabPaths.count() > 0))
+                                        {
+                                            println("Click! on Index " + currentIndex)
+                                            UpdateText(currentPrefab,prefabPaths[currentIndex])
+                                        }
 
                                         }
-                                    } catch (e: Exception) {
+                                    setOnKeyPressed{
+
+                                        if(it.code == KeyCode.DOWN)
+                                        {
+                                            DownPressed(prefabPaths.count())
+
+                                            if(prefabPaths.count() > 0)
+                                            {
+                                                UpdateText(currentPrefab,prefabPaths[currentIndex])
+                                            }
+                                        }
+                                        if(it.code == KeyCode.UP)
+                                        {
+                                            UpPressed()
+                                            if(prefabPaths.count() > 0)
+                                            {
+                                                UpdateText(currentPrefab,prefabPaths[currentIndex])
+                                            }
+                                        }
                                     }
+
 
                                 }
                                 textarea(currentPrefab) {
@@ -880,20 +887,36 @@ class MainView : View("Unity Scanner Version 1.0") {
 
                                     prefWidth = 600.0
 
-                                    try {
-                                        setOnMouseClicked() {
-                                            val index = this.selectionModel.selectedIndex;
 
-                                            println("Click! on Index " + index)
+                                    setOnMouseClicked() {
 
-                                            //change for text files
-                                            val fileName = shaderPaths[index]
-
-                                            currentShader.set(File(fileName).readText())
-
+                                        currentIndex = this.selectionModel.selectedIndex;
+                                        if((currentIndex != -1) && (shaderPaths.count() > 0))
+                                        {
+                                            println("Click! on Index " + currentIndex)
+                                            UpdateText(currentShader,shaderPaths[currentIndex])
+                                        }
 
                                         }
-                                    } catch (e: Exception) {
+                                    setOnKeyPressed{
+
+                                        if(it.code == KeyCode.DOWN)
+                                        {
+                                            DownPressed(shaderPaths.count())
+
+                                            if(shaderPaths.count() > 0)
+                                            {
+                                                UpdateText(currentShader,shaderPaths[currentIndex])
+                                            }
+                                        }
+                                        if(it.code == KeyCode.UP)
+                                        {
+                                            UpPressed()
+                                            if(shaderPaths.count() > 0)
+                                            {
+                                                UpdateText(currentShader,shaderPaths[currentIndex])
+                                            }
+                                        }
                                     }
 
                                 }
