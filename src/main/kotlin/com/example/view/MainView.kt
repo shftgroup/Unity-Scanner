@@ -576,7 +576,6 @@ class MainView : View("Unity Scanner Version 1.0") {
 
                                     prefWidth = 600.0
 
-
                                     setOnMouseClicked() {
                                             currentIndex = this.selectionModel.selectedIndex;
                                             if((currentIndex != -1) && (audioPaths.count() > 0))
@@ -607,8 +606,9 @@ class MainView : View("Unity Scanner Version 1.0") {
                                         }
                                     }
 
-                                }
 
+
+                                }
                                 hbox {
 
                                     button("Play Sound")
