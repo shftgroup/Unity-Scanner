@@ -12,6 +12,12 @@ group = 'com.test'
 version = '1.0-SNAPSHOT'
 
 
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
 
 
 repositories {
@@ -23,23 +29,41 @@ application {
     mainClassName = "com.example.MainKt"
 }
 
+
+
 dependencies {
     implementation "no.tornado:tornadofx:$tornadofx_version"
     implementation 'net.pwall.yaml:yaml-simple:1.3'
     implementation 'com.google.code.gson:gson:2.8.8'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.5.21'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+
+
+    implementation group: 'com.twelvemonkeys.imageio', name: 'imageio-core', version: '3.8.1'
+    implementation group: 'com.twelvemonkeys.imageio', name: 'imageio-tga', version: '3.8.1'
+
+    implementation("com.github.lafa.twelvemonkeyspurejava.imageio:imageio-pict:1.0")
+
+    implementation("com.github.lafa.twelvemonkeyspurejava.imageio:imageio-pdf:1.0")
+
+    implementation("com.github.lafa.twelvemonkeyspurejava.imageio:imageio-psd:1.0")
+
+    implementation("com.github.lafa.twelvemonkeyspurejava.imageio:imageio-iff:1.0")
+
+    implementation("com.twelvemonkeys.imageio:imageio-tiff-jdk-interop:3.7.0")
+
+// https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-hdr
+    implementation("com.twelvemonkeys.imageio:imageio-hdr:3.8.1")
+
+
 
 }
 
 
 
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
+
 
 tasks.jar {
     manifest {

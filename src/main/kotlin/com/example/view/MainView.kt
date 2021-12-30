@@ -1,11 +1,12 @@
 package com.example.view
 
+
+
+import JTargaReader
 import com.example.Styles
 import com.example.controller.MainController
-import JTargaReader
-
-
 import com.example.model.PackageManifest
+
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
@@ -16,14 +17,17 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.TabPane
 import javafx.scene.image.Image
-import javafx.scene.image.ImageView
 import javafx.scene.image.WritableImage
 import javafx.scene.input.KeyCode
 import javafx.scene.media.AudioClip
 import javafx.stage.FileChooser
+
 import tornadofx.*
+import java.awt.image.BufferedImage
 import java.io.File
 import java.io.FileInputStream
+import javax.imageio.ImageIO
+
 
 
 //message for img
@@ -473,6 +477,13 @@ class MainView : View("Unity Scanner Version 1.0") {
                                     addClass(Styles.textArea)
                                     prefWidth = 600.0
                                     prefHeight = 600.0
+
+                                    val readers = ImageIO.getImageReadersByFormatName("tga")
+                                    while (readers.hasNext()) {
+                                        println("reader: " + readers.next())
+                                    }
+
+
                                     setOnMouseClicked() {
                                             currentIndex = this.selectionModel.selectedIndex;
 
@@ -1239,69 +1250,44 @@ class MainView : View("Unity Scanner Version 1.0") {
         }
     }
 
-    fun UpdateImage()
-    {
+    fun UpdateImage() {
         val fileStream = FileInputStream(imagePaths[currentIndex])
         val image = Image(fileStream)
 
-        if(imagePaths[currentIndex].endsWith(".tga"))
-        {
-            //println("Targa image detected")
+
+       // var finalImage:BufferedImage? = null
+
+            val finalImage = ImageIO.read(File(imagePaths[currentIndex]))
 
 
-            val convertedImage = JTargaReader.getImage(imagePaths[currentIndex])
-
-            var wr: WritableImage? = null
-            if (convertedImage != null) {
-                wr = WritableImage(convertedImage.width, convertedImage.height)
-                val pw = wr.pixelWriter
-                for (x in 0 until convertedImage.width) {
-                    for (y in 0 until convertedImage.height) {
-                        pw.setArgb(x, y, convertedImage.getRGB(x, y))
-                    }
-                }
-            }
-
-           // val finalImage  = ImageView(wr).getImage();
-            val finalImage = SwingFXUtils.toFXImage(convertedImage,null)
+            val displayImage:Image = SwingFXUtils.toFXImage(finalImage, null)
 
 
-            currentImage.set(finalImage)
+            currentImage.set(displayImage)
+            //currentImage.set(image)
 
             currentImageInfo.set("")
 
             val imageInfo =
-                "Image Size: " + finalImage.width + " X " + finalImage.height + "\n" + "Path: " + imagePaths[currentIndex]
+                "Image Size: " + displayImage.width + " X " + displayImage.height + "\n" + "Path: " + imagePaths[currentIndex]
 
 
             currentImageInfo.set(imageInfo)
 
 
-            return
         }
-        currentImage.set(image)
 
-        currentImageInfo.set("")
+        fun UpdateText(text: SimpleStringProperty, fileName: String) {
 
-        val imageInfo =
-            "Image Size: " + image.width + " X " + image.height + "\n" + "Path: " + imagePaths[currentIndex]
+            text.set((File(fileName).readText()))
 
-
-        currentImageInfo.set(imageInfo)
-    }
-    fun UpdateText(text:SimpleStringProperty, fileName:String)
-    {
-
-        text.set((File(fileName).readText()))
-
-    }
+        }
 
 
 
 
 
 }
-
 
 
 
