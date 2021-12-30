@@ -2,28 +2,34 @@ package com.example.view
 
 import com.example.Styles
 import com.example.controller.MainController
+import JTargaReader
+
+
 import com.example.model.PackageManifest
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import javafx.embed.swing.SwingFXUtils
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.TabPane
 import javafx.scene.image.Image
+import javafx.scene.image.ImageView
+import javafx.scene.image.WritableImage
 import javafx.scene.input.KeyCode
 import javafx.scene.media.AudioClip
-import javafx.scene.paint.Color
-import javafx.scene.text.Font
-import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
-import sun.security.rsa.RSAUtil
 import tornadofx.*
-import java.awt.event.KeyEvent
 import java.io.File
 import java.io.FileInputStream
 
+
+//message for img
+//messages for audio
+//info sections
+//tiff/tga
 
 
 class MainView : View("Unity Scanner Version 1.0") {
@@ -1083,16 +1089,6 @@ class MainView : View("Unity Scanner Version 1.0") {
                     }
                 }
 
-
-
-
-
-
-
-
-
-
-
             }*/
 
 
@@ -1247,6 +1243,42 @@ class MainView : View("Unity Scanner Version 1.0") {
     {
         val fileStream = FileInputStream(imagePaths[currentIndex])
         val image = Image(fileStream)
+
+        if(imagePaths[currentIndex].endsWith(".tga"))
+        {
+            //println("Targa image detected")
+
+
+            val convertedImage = JTargaReader.getImage(imagePaths[currentIndex])
+
+            var wr: WritableImage? = null
+            if (convertedImage != null) {
+                wr = WritableImage(convertedImage.width, convertedImage.height)
+                val pw = wr.pixelWriter
+                for (x in 0 until convertedImage.width) {
+                    for (y in 0 until convertedImage.height) {
+                        pw.setArgb(x, y, convertedImage.getRGB(x, y))
+                    }
+                }
+            }
+
+           // val finalImage  = ImageView(wr).getImage();
+            val finalImage = SwingFXUtils.toFXImage(convertedImage,null)
+
+
+            currentImage.set(finalImage)
+
+            currentImageInfo.set("")
+
+            val imageInfo =
+                "Image Size: " + finalImage.width + " X " + finalImage.height + "\n" + "Path: " + imagePaths[currentIndex]
+
+
+            currentImageInfo.set(imageInfo)
+
+
+            return
+        }
         currentImage.set(image)
 
         currentImageInfo.set("")
