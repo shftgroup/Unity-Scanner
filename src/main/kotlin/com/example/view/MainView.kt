@@ -1347,7 +1347,7 @@ class MainView : View("Unity Scanner Version 1.0") {
 
         }
 
-        fun UpdateText(text: SimpleStringProperty, fileName: String) {
+    fun UpdateText(text: SimpleStringProperty, fileName: String) {
 
             text.set((File(fileName).readText()))
 

@@ -33,11 +33,12 @@ class ProjectSettingsExtractor(projectDirectory:File?, version:Int) {
 
         //here we need to deal with if the name is not showing up properly
         // unity 5 needs to get from directory
-        // for unity 5 projects the project name will reflect the directory nmae
+        // for unity 5 projects the project name will reflect the directory name
         // project settings folder starts in unity 4
+        // Unity 4 name can be difficult to extract. May need to use folder name as in Unity 5
         if(oldVersion == false)
         {
-            if(editorVersion == 5)
+            if(editorVersion == 5 || editorVersion == 4)
                 return  directory.toString().substringAfterLast("\\")
 
             for (line in fileLines) {
