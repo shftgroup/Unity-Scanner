@@ -53,7 +53,6 @@ dependencies {
 
     implementation("com.twelvemonkeys.imageio:imageio-tiff-jdk-interop:3.7.0")
 
-// https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-hdr
     implementation("com.twelvemonkeys.imageio:imageio-hdr:3.8.1")
 
 

@@ -1,8 +1,6 @@
 package com.example.view
 
 
-
-import JTargaReader
 import com.example.Styles
 import com.example.controller.MainController
 import com.example.model.PackageManifest
@@ -17,23 +15,23 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.TabPane
 import javafx.scene.image.Image
-import javafx.scene.image.WritableImage
+
 import javafx.scene.input.KeyCode
 import javafx.scene.media.AudioClip
 import javafx.stage.FileChooser
 
 import tornadofx.*
-import java.awt.image.BufferedImage
+
 import java.io.File
 import java.io.FileInputStream
 import javax.imageio.ImageIO
 
 
 
-//message for img
-//messages for audio
+
+
 //info sections
-//tiff/tga
+
 
 
 class MainView : View("Unity Scanner Version 1.0") {
@@ -76,7 +74,8 @@ class MainView : View("Unity Scanner Version 1.0") {
 
     var audioList:ObservableList<String> = FXCollections.observableArrayList()
     var audioPaths = mutableListOf<String>()
-    lateinit var audioClip: AudioClip
+    var audioClip: AudioClip? = null
+    var currentAudioInfo = SimpleStringProperty()
 
     var nativeList:ObservableList<String> = FXCollections.observableArrayList()
     var nativePaths = mutableListOf<String>()
@@ -110,7 +109,7 @@ class MainView : View("Unity Scanner Version 1.0") {
     var TA = javafx.scene.control.TextArea()
     lateinit var TA2:javafx.scene.control.Label
 
-    var currentIndex = 0
+    var currentIndex = -1
 
     override val root = vbox {
         alignment = Pos.TOP_LEFT
@@ -478,11 +477,12 @@ class MainView : View("Unity Scanner Version 1.0") {
                                     prefWidth = 600.0
                                     prefHeight = 600.0
 
+                                    /*Testing only
                                     val readers = ImageIO.getImageReadersByFormatName("tga")
                                     while (readers.hasNext()) {
                                         println("reader: " + readers.next())
                                     }
-
+                                    */
 
                                     setOnMouseClicked() {
                                             currentIndex = this.selectionModel.selectedIndex;
@@ -593,32 +593,78 @@ class MainView : View("Unity Scanner Version 1.0") {
 
                                     prefWidth = 600.0
 
+
+
                                     setOnMouseClicked() {
+
                                             currentIndex = this.selectionModel.selectedIndex;
                                             if((currentIndex != -1) && (audioPaths.count() > 0))
                                             {
                                                 println("Click! on Index " + currentIndex)
-                                                audioClip = AudioClip(File(audioPaths[currentIndex]).toURI().toString())
-                                            }
+
+                                                val supportedTypes = listOf<String>("aif", "aiff", "wav", "mp3")
+                                                val audioType = audioPaths[currentIndex].substringAfterLast(".")
+                                                if(audioType in supportedTypes) {
+                                                    audioClip =
+                                                        AudioClip(File(audioPaths[currentIndex]).toURI().toString())
+                                                    currentAudioInfo.set("")
+                                                }
+                                                else
+                                                {
+                                                    currentAudioInfo.set("Audio Type not currently supported")
+                                                    audioClip = null
+                                                }
+
+                                                }
 
                                         }
                                     setOnKeyPressed{
 
+                                        val supportedTypes = listOf<String>("aif", "aiff", "wav", "mp3")
+
+
                                         if(it.code == KeyCode.DOWN)
                                         {
                                             DownPressed(audioPaths.count())
-
+                                            val audioType = audioPaths[currentIndex].substringAfterLast(".")
                                             if(audioPaths.count() > 0)
                                             {
-                                                audioClip = AudioClip(File(audioPaths[currentIndex]).toURI().toString())
+                                                if(audioType in supportedTypes) {
+                                                    audioClip =
+                                                        AudioClip(File(audioPaths[currentIndex]).toURI().toString())
+                                                    currentAudioInfo.set("")
+                                                }
+                                                else
+                                                {
+                                                    audioClip = null
+                                                    currentAudioInfo.set("Audio Type not currently supported")
+                                                }
+                                            }
+                                            else
+                                            {
+                                                audioClip = null
                                             }
                                         }
                                         if(it.code == KeyCode.UP)
                                         {
                                             UpPressed()
+                                            val audioType = audioPaths[currentIndex].substringAfterLast(".")
                                             if(audioPaths.count() > 0)
                                             {
-                                                audioClip = AudioClip(File(audioPaths[currentIndex]).toURI().toString())
+                                                if(audioType in supportedTypes) {
+                                                    audioClip =
+                                                        AudioClip(File(audioPaths[currentIndex]).toURI().toString())
+                                                    currentAudioInfo.set("")
+                                                }
+                                                else
+                                                {
+                                                    audioClip = null
+                                                    currentAudioInfo.set("Audio Type not currently supported")
+                                                }
+                                            }
+                                            else
+                                            {
+                                                audioClip = null
                                             }
                                         }
                                     }
@@ -626,45 +672,53 @@ class MainView : View("Unity Scanner Version 1.0") {
 
 
                                 }
-                                hbox {
+                               vbox {
+                                   hbox {
 
-                                    button("Play Sound")
-                                    {
-                                        hboxConstraints {
-                                            marginTop = 225.0
-                                            marginLeft = 400.0
+                                       button("Play Sound")
+                                       {
+                                           hboxConstraints {
+                                               marginTop = 225.0
+                                               marginLeft = 400.0
 
-                                        }
-                                        style {
-                                            padding = box(20.px)
-
-
-                                        }
-                                        setOnAction {
-
-                                            audioClip.play()
-                                        }
-                                    }
-                                    button("Stop Sound")
-                                    {
-                                        hboxConstraints {
-                                            marginTop = 225.0
-                                            marginLeft = 100.0
-
-                                        }
-                                        style {
-                                            padding = box(20.px)
+                                           }
+                                           style {
+                                               padding = box(20.px)
 
 
-                                        }
-                                        setOnAction {
+                                           }
+                                           setOnAction {
 
-                                            audioClip.stop()
-                                        }
-                                    }
+                                               audioClip?.play()
+                                           }
+                                       }
+                                       button("Stop Sound")
+                                       {
+                                           hboxConstraints {
+                                               marginTop = 225.0
+                                               marginLeft = 100.0
 
-                                }
+                                           }
+                                           style {
+                                               padding = box(20.px)
 
+
+                                           }
+                                           setOnAction {
+
+                                               audioClip?.stop()
+                                           }
+                                       }
+
+                                   }
+                                   label(currentAudioInfo)
+                                   {
+                                       addClass(Styles.heading)
+                                       bind(currentAudioInfo)
+                                   }
+
+
+                               }
 
                             }
                         }
@@ -1161,6 +1215,11 @@ class MainView : View("Unity Scanner Version 1.0") {
 
     fun UpPressed()
     {
+        if(currentIndex == -1)
+        {
+            currentIndex = 0
+            return
+        }
         currentIndex -= 1
         if(currentIndex < 0)
         {
@@ -1171,7 +1230,12 @@ class MainView : View("Unity Scanner Version 1.0") {
 
     fun DownPressed(length:Int)
     {
-        currentIndex += 1
+        if(currentIndex == -1)
+        {
+            currentIndex = 0
+            return
+        }
+           currentIndex += 1
         if(currentIndex > length - 1)
         {
             currentIndex -= 1
@@ -1251,29 +1315,35 @@ class MainView : View("Unity Scanner Version 1.0") {
     }
 
     fun UpdateImage() {
-        val fileStream = FileInputStream(imagePaths[currentIndex])
-        val image = Image(fileStream)
+            val fileStream = FileInputStream(imagePaths[currentIndex])
+
+            val imageType = imagePaths[currentIndex].substringAfterLast('.')
+            val supportedTypes = listOf<String>("png","bmp","tif","tiff","tga","jpg","jpeg","iff","pict","hdr","psd")
+            if(imageType in supportedTypes) {
+                val finalImage = ImageIO.read(File(imagePaths[currentIndex]))
 
 
-       // var finalImage:BufferedImage? = null
-
-            val finalImage = ImageIO.read(File(imagePaths[currentIndex]))
+                val displayImage: Image = SwingFXUtils.toFXImage(finalImage, null)
 
 
-            val displayImage:Image = SwingFXUtils.toFXImage(finalImage, null)
+                currentImage.set(displayImage)
 
 
-            currentImage.set(displayImage)
-            //currentImage.set(image)
+                currentImageInfo.set("")
 
-            currentImageInfo.set("")
-
-            val imageInfo =
-                "Image Size: " + displayImage.width + " X " + displayImage.height + "\n" + "Path: " + imagePaths[currentIndex]
+                val imageInfo =
+                    "Image Size: " + displayImage.width + " X " + displayImage.height + "\n" + "Path: " + imagePaths[currentIndex]
 
 
-            currentImageInfo.set(imageInfo)
+                currentImageInfo.set(imageInfo)
+            }
+            else
+            {
+                val imageInfo =
+                     "Path: " + imagePaths[currentIndex] + "\n" + "Image type not currently supported"
 
+                currentImageInfo.set(imageInfo)
+            }
 
         }
 
