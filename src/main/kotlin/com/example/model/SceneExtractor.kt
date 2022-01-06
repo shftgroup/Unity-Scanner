@@ -8,9 +8,10 @@ class SceneExtractor(projectDirectory: File?, version:Int) {
 
     //properties and constants
     val directory = projectDirectory
-    val fileLines = ReadFileAsLinesUsingReadLines("") //this will need to change to search for file
-
     val editorVersion = version
+    val fileLines = ReadFileAsLinesUsingReadLines(directory.toString() + "/ProjectSettings/EditorBuildSettings.asset") //this will need to change to search for file
+
+
 
     var scenesInBuild = 0
     var scenesInAssetFolder = 0
@@ -27,8 +28,12 @@ class SceneExtractor(projectDirectory: File?, version:Int) {
     {
         var returnList = listOf<String>()
 
+       // println("Editor Version is " + editorVersion)
+       // println("OLD Version is: " + oldVersion.toString())
+
         if(oldVersion == false)
         {
+           // println("Old version is false")
             for (line in fileLines) {
                 val r = Regex("path")
 
@@ -41,13 +46,14 @@ class SceneExtractor(projectDirectory: File?, version:Int) {
                     //sceneName = line.substringAfter("Levels/").substringBefore(".")
 
                     sceneName = line.substringAfterLast("/").substringBefore(".")
-
+                    /*
                     if (sceneName.contains(Regex("path"))) {
                         continue
-                    } else {
+                    } else {*/
                         returnList += sceneName
                         scenesInBuild += 1
-                    }
+                       // println("Scenes in build: "+ scenesInBuild)
+                   // }
                 }
             }
         }
@@ -102,6 +108,7 @@ class SceneExtractor(projectDirectory: File?, version:Int) {
     fun ReadFileAsLinesUsingReadLines(fileName: String): List<String>
     {
        // if( File(directory.toString() + "/ProjectSettings/EditorBuildSettings.ASSET").readLines()
+       // println("ReadFile:  Editor Version = " +editorVersion)
         if(editorVersion <= 5)
         {
             oldVersion = true

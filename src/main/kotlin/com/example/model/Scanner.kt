@@ -48,13 +48,13 @@ class Scanner {
                 editorVersion = ExtractVersionNumber()
 
                 val version = editorVersion.substringBefore('.').toInt()
-                println("Version: " + version)
+                //println("Version: " + version)
                 //get project name
                 //this needs to be refactored to set the name directly
                 settingsExtractor = ProjectSettingsExtractor(directory,version)
                 settingsExtractor.ExtractSettings()
                 PopulateSettingsValues()
-
+               // println("Version: " + version)
                 sceneExtractor = SceneExtractor(directory,version)
                 scenesInBuild = sceneExtractor.ExtractScenesInBuild()
                 totalScenesinAssetFolder = sceneExtractor.ExtractAllScenesFromAssets()
@@ -75,6 +75,7 @@ class Scanner {
             else
             {
                 print("Cannot Locate Assets, This appears to not be a unity root directory")
+                projectName = "Cannot Locate Assets, This appears to not be a unity root directory"
             }
         }
       //  assetInfo = assets.as
@@ -91,6 +92,8 @@ class Scanner {
            var content: String = file.readText()
 
            editorVersion = content.split("\n")[0].substringAfter(" ")
+
+         //  println("Editor Version is: " + editorVersion)
 
            return editorVersion
        }
