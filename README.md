@@ -2,7 +2,7 @@
 Scans and extracts info from Unity Projects to assist with Archiving.
 
 The latest release, including demo/instructional video can be found here:
-https://github.com/shftgroup/Unity-Scanner/releases/edit/V1.0-Windows-Jan-2022
+https://github.com/shftgroup/Unity-Scanner/releases/tag/V0.6-Windows-Jar-Jan-2022
 
 
 
