@@ -16,6 +16,8 @@ The tabs will populate with any information extracted by the project.
 
 A demo video is included with the release (.mkv file) for further instructions.
 
+You may also view the demo video on Youtube: https://www.youtube.com/watch?v=ugjtDHoEe2U
+
 
 Build:
 If you wish to clone and build the project detailed build instructions can be found here:   https://medium.com/@jsj5909/5a8add96cc99
